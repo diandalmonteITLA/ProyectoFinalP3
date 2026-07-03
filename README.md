@@ -2,7 +2,7 @@
 - Jira utiliza como ID "SCRUM - N", entonces cuando lean SCRUM-15, por ejemplo, sepan que estoy hablando de algun item (historia, tarea, epica, etc...) cuyo ID es SCRUM-15. 
 Para acortar un poco lo resumiré a SN, por lo que "SCRUM-15" seria "S15"
 
-- Dentro de cada historia de usuario hay subtareas, cada subtarea tiene descripciones. Estas subtareas son las que estaran realizando.  
+- Dentro de cada historia de usuario hay subtareas, cada subtarea tiene descripcion. Estas subtareas son las que estaran realizando.  
   
 - Dicho esto, de las historias S13, S14 y S15 el Modelado de entidades y Mapeo EF Core me tocan a mi, sus tareas empiezan a partir del Mapeo EF Core.<br><br>
 
