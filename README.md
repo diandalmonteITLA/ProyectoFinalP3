@@ -15,7 +15,7 @@ Solo los datos que se mostraran en la interfaz deben estar en español. Por ejem
 - Cuando empiecen el desarrollo de una historia, en el tablero de Jira, muevan la tarjeta a la columna "En Curso", y cuando inicien una tarea dentro de la historia, cambien el estado de "Por Hacer" a "En Curso" y asi respectivamente.
 
 - Tienen el link a Github, trabajen remotamente asegurandose de realizar git pull y probar antes de abrir un pull request. Esto se hace para asegurarse que todo el codigo esta al dia con el repositorio remoto y facilitar la insercion de su funcionalidad agregada sin errores de merge.
-  Solo abran pull requests cuando finalicen y prueben la parte completa que les tocaba hacer (ya sea la subtarea o la historia, eso depende de ustedes).  
+  Solo abran pull requests cuando finalicen y prueben la funcion completa que les tocaba hacer (ya sea la subtarea o la historia, eso depende de ustedes).  
 
 - Las clases Service van en la capa Application, las clases Controller en la capa Presentation (dentro del proyecto Web)<br><br>
 
