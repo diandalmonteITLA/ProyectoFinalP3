@@ -1,4 +1,4 @@
-## Para equipo A y B: 
+# Para equipo A y B: 
 - Jira utiliza como ID "SCRUM - N", entonces cuando lean SCRUM-15, por ejemplo, sepan que estoy hablando de algun item (historia, tarea, epica, etc...) cuyo ID es SCRUM-15. 
 Para acortar un poco lo resumiré a SN, por lo que "SCRUM-15" seria "S15"
 
