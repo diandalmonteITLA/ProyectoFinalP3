@@ -16,7 +16,7 @@ Solo los datos que se mostraran en la interfaz deben estar en español. Por ejem
 
 - Tienen el link a Github, trabajen remotamente asegurandose de realizar git pull y probar antes de abrir un pull request. Esto se hace para asegurarse que todo el codigo esta al dia con el repositorio remoto y facilitar la insercion de su funcionalidad agregada sin errores de merge.
   Solo abran pull requests cuando finalicen y prueben la parte completa que les tocaba hacer (ya sea la subtarea o la historia, eso depende de ustedes).  
-  
-  - Las clases Service van en la capa Application, las clases Controller en la capa Presentation (dentro del proyecto Web)<br><br>
 
-  ## Puede que se me haya pasado algo, cualquier duda pregunten.
+- Las clases Service van en la capa Application, las clases Controller en la capa Presentation (dentro del proyecto Web)<br><br>
+
+## Puede que se me haya pasado algo, cualquier duda pregunten.
