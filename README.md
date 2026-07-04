@@ -4,7 +4,7 @@ Para acortar un poco lo resumiré a SN, por lo que "SCRUM-15" seria "S15"
 
 - Dentro de cada historia de usuario hay subtareas, cada subtarea tiene descripcion. Estas subtareas son las que estaran realizando.  
   
-- Dicho esto, de las historias S13, S14 y S15 el Modelado de entidades y Mapeo EF Core me tocan a mi, sus tareas empiezan a partir del Mapeo EF Core.<br><br>
+- Dicho esto, de las historias S13, S14 y S15 el Modelado de entidades y Mapeo EF Core me tocan a mi, sus tareas empiezan despues del Mapeo EF Core.<br><br>
 
 ### Desarollo de la app:
 - Para estar todos en la misma pagina, la arquitectura a utilizar es  Onion, y la convencion de nomenclatura sera en ingles, que es el estandar en programacion. Es decir, todas las clases, metodos y variables deben estar en ingles.
