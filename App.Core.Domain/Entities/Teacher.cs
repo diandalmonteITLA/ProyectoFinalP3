@@ -12,7 +12,8 @@ namespace App.Core.Domain.Entities
         public  required string Name { get; set; }
         public required string LastName { get; set; }
         public required PhoneNumber PhoneNumber { get; set; }
-        public required string Email { get; set; } = string.Empty;
+        public required string Email { get; set; }
+        public required string HashedPassword { get; set; }
 
         public ICollection<Grade>? ManagedGrades { get; set; }
 
