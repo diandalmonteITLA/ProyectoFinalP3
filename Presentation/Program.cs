@@ -1,3 +1,4 @@
+using App.Core.Application.Mappings;
 namespace Presentation
 {
     public class Program
@@ -9,7 +10,9 @@ namespace Presentation
             // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddRazorPages();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.AddAutoMapper(cfg => cfg.AddProfile<GradeMappingProfile>());
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
