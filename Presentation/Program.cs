@@ -30,6 +30,7 @@ namespace Presentation
             app.UseAuthorization();
 
             app.MapStaticAssets();
+            app.MapControllers();
             app.MapRazorPages()
                .WithStaticAssets();
 

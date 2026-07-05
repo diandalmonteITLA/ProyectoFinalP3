@@ -35,10 +35,19 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El encargado no puede estar vacío.", nameof(guardian));
             }
 
-            if (!_phoneNumberValidator.ValidateNumber(guardian.PhoneNumber.Number))
+            if (guardian.PhoneNumbers == null || !guardian.PhoneNumbers.Any())
             {
-                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+                throw new ArgumentException("El encargado debe tener al menos un número de teléfono.", nameof(guardian));
             }
+
+            foreach (PhoneNumber pNumber in guardian.PhoneNumbers)
+            {
+                if (!_phoneNumberValidator.ValidateNumber(pNumber.Number))
+                {
+                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+                }
+            }
+ 
 
             await _guardianRepository.AddAsync(guardian);
         }
@@ -47,18 +56,26 @@ namespace App.Core.Application.Services
         {
             if (guardian is null)
             {
-                throw new ArgumentException("El encargado no puede estar vacío.", nameof(guardian));
+                throw new ArgumentException("El acudiente no puede estar vacío.", nameof(guardian));
             }
 
-            if (!_phoneNumberValidator.ValidateNumber(guardian.PhoneNumber.Number))
+            if (guardian.PhoneNumbers == null || !guardian.PhoneNumbers.Any())
             {
-                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+                throw new ArgumentException("El acudiente debe tener al menos un número de teléfono.", nameof(guardian));
+            }
+
+            foreach (PhoneNumber pNumber in guardian.PhoneNumbers)
+            {
+                if (!_phoneNumberValidator.ValidateNumber(pNumber.Number))
+                {
+                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+                }
             }
 
             var existingGuardian = await _guardianRepository.GetByIdAsync(guardian.Id);
             if (existingGuardian is null)
             {
-                throw new KeyNotFoundException("No se encontró el encargado que se desea actualizar.");
+                throw new KeyNotFoundException("No se encontró el acudiente que se desea actualizar.");
             }
 
             await _guardianRepository.UpdateAsync(guardian);
@@ -69,7 +86,7 @@ namespace App.Core.Application.Services
             var existingGuardian = await _guardianRepository.GetByIdAsync(id);
             if (existingGuardian is null)
             {
-                throw new KeyNotFoundException("No se encontró el encargado que se desea desactivar.");
+                throw new KeyNotFoundException("No se encontró el acudiente que se desea desactivar.");
             }
 
             await _guardianRepository.DeactiveAsync(id);
