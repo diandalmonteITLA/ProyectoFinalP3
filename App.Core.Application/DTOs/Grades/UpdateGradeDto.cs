@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace App.Core.Application.DTOs
+namespace App.Core.Application.DTOs.Grades
 {
     public class UpdateGradeDto
     {

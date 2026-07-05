@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Core.Application.DTOs.Students
+namespace App.Core.Application.DTOs
 {
     public class PhoneNumberDto
     {

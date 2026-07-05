@@ -1,4 +1,4 @@
-﻿using App.Core.Application.DTOs;
+﻿using App.Core.Application.DTOs.Grades;
 
 namespace App.Core.Application.Interfaces
 {
