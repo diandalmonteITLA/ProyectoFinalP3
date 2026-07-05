@@ -3,14 +3,12 @@ using App.Core.Application.Interfaces;
 
 namespace App.Core.Application.Helpers
 {
-    /// <summary>
-    /// Validates the format of a phone number. This is the single place that owns
-    /// this rule; StudentService, GuardianService and TeacherService should call
-    /// ValidateNumber instead of re-implementing the check.
-    /// Only accepts Dominican Republic numbers: area code 809, 829 or 849, followed
-    /// by 7 digits. Accepted formats include: 8091234567, 809-123-4567,
-    /// (809) 123-4567, 809.123.4567 and +1 809-123-4567.
-    /// </summary>
+    /*
+    Valida el formato de un numero telefonico. StudentService, GuardianService y TeacherService 
+    deben llamar PhoneNumberValidator en lugar de implementar la logica nuevamente.
+    Solo acepta numeros de Republica Dominicana: (eg. 809, 829 or 849 seguido de 7 digitos). 
+    Los formatos aceptados incluyen: 8091234567, 809-123-4567, (809) 123-4567, 809.123.4567 and +1 809-123-4567.
+    */
     public class PhoneNumberValidator : IPhoneNumberValidator
     {
         private static readonly Regex PhoneNumberPattern = new(
