@@ -8,6 +8,7 @@ namespace Presentation
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             var app = builder.Build();
 
