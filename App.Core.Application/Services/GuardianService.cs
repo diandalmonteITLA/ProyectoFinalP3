@@ -10,10 +10,12 @@ namespace App.Core.Application.Services
     public class GuardianService : IGuardianService
     {
         private readonly IGenericRepository<Guardian> _guardianRepository;
+        private readonly IPhoneNumberValidator _phoneNumberValidator;
 
-        public GuardianService(IGenericRepository<Guardian> guardianRepository)
+        public GuardianService(IGenericRepository<Guardian> guardianRepository, IPhoneNumberValidator phoneNumberValidator)
         {
             _guardianRepository = guardianRepository ?? throw new ArgumentNullException(nameof(guardianRepository));
+            _phoneNumberValidator = phoneNumberValidator ?? throw new ArgumentNullException(nameof(phoneNumberValidator));
         }
 
         public async Task<Guardian?> GetByIdAsync(Guid id)
@@ -33,6 +35,11 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El encargado no puede estar vacío.", nameof(guardian));
             }
 
+            if (!_phoneNumberValidator.ValidateNumber(guardian.PhoneNumber.Number))
+            {
+                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+            }
+
             await _guardianRepository.AddAsync(guardian);
         }
 
@@ -41,6 +48,11 @@ namespace App.Core.Application.Services
             if (guardian is null)
             {
                 throw new ArgumentException("El encargado no puede estar vacío.", nameof(guardian));
+            }
+
+            if (!_phoneNumberValidator.ValidateNumber(guardian.PhoneNumber.Number))
+            {
+                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
             }
 
             var existingGuardian = await _guardianRepository.GetByIdAsync(guardian.Id);
