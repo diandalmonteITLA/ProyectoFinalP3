@@ -35,7 +35,12 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El encargado no puede estar vacío.", nameof(guardian));
             }
 
-            if (!_phoneNumberValidator.ValidateNumber(guardian.PhoneNumber.Number))
+            if (guardian.PhoneNumbers == null || !guardian.PhoneNumbers.Any())
+            {
+                throw new ArgumentException("El encargado debe tener al menos un número de teléfono.", nameof(guardian));
+            }
+
+            if (!_phoneNumberValidator.ValidateNumber(guardian.PhoneNumbers.First().Number))
             {
                 throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
             }
@@ -50,7 +55,12 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El encargado no puede estar vacío.", nameof(guardian));
             }
 
-            if (!_phoneNumberValidator.ValidateNumber(guardian.PhoneNumber.Number))
+            if (guardian.PhoneNumbers == null || !guardian.PhoneNumbers.Any())
+            {
+                throw new ArgumentException("El encargado debe tener al menos un número de teléfono.", nameof(guardian));
+            }
+
+            if (!_phoneNumberValidator.ValidateNumber(guardian.PhoneNumbers.First().Number))
             {
                 throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
             }

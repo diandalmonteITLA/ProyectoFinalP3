@@ -1,12 +1,11 @@
-﻿using App.Core.Application.DTOS.Students;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Core.Application.DTOs.Students
+namespace App.Core.Application.DTOS.Students
 {
     public class UpdateStudentDto
     {
