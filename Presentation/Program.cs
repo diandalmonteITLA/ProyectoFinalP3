@@ -1,6 +1,11 @@
 using App.Core.Application.Mappings;
 using Microsoft.AspNetCore.Identity;
 using App.Infrastructure.Identity;
+using AutoMapper;
+using App.Core.Application.Interfaces;
+using App.Core.Application.Mappings;
+using App.Core.Application.Services;
+
 namespace Presentation
 {
     public class Program
@@ -10,6 +15,9 @@ namespace Presentation
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddAutoMapper(typeof(StudentMappingProfile).Assembly);
+            builder.Services.AddScoped<IStudentService, StudentService>();
+            builder.Services.AddScoped<IGuardianService, GuardianService>();
             builder.Services.AddControllers();
             builder.Services.AddRazorPages();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
