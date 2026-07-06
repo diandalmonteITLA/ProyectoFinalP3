@@ -12,7 +12,7 @@ namespace App.Infrastructure.Identity
 {
     public static class ServicesRegistration
     {
-        public static void AddIdentityLayerIocForWebApp(this IServiceCollection services, IConfiguration config)
+        public static void AddIdentityLayerIoc(this IServiceCollection services, IConfiguration config)
         {
             GeneralConfiguration(services, config);
 
