@@ -1,4 +1,4 @@
-﻿using App.Core.Application.DTOs.User;
+using App.Core.Application.DTOs.User;
 using App.Core.Application.ViewModels;
 using App.Infrastructure.Identity.Entities;
 using AutoMapper;
@@ -8,12 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace App.Presentation.Web.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-
-    namespace App.Presentation.Web.Controllers
+    public class LoginController : Controller
     {
-        public class LoginController : Controller
-        {
             private readonly IAccountService _accountService;
 
  
@@ -108,6 +104,5 @@ namespace App.Presentation.Web.Controllers
                 return View(new LoginViewModel());
             }
             #endregion
-        }
     }
 }

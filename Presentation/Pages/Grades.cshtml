@@ -1,0 +1,481 @@
+@page
+@model Presentation.Pages.GradesModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Grados Académicos - Portal de Gestión";
+    
+
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Instituto tal</title>
+    
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS for grid / forms -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        :root {
+            --color-bg-page: #F8FAFC;
+            --color-sidebar-bg: #0B0F19;
+            --color-accent: #D97706;
+            --color-text-dark: #0F172A;
+            --color-text-muted: #94A3B8;
+            --color-text-label: #475569;
+            --color-border: #E2E8F0;
+            --color-card-bg: #FFFFFF;
+            --color-input-bg: #F8FAFC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-bg-page);
+            color: var(--color-text-dark);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background-color: var(--color-sidebar-bg);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 36px 0;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            margin-bottom: 48px;
+        }
+
+        .brand-emblem {
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-accent);
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 16px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #94A3B8;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .menu-link svg {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .menu-item.active .menu-link {
+            color: #ffffff;
+            background-color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        /* Main Workspace Content */
+        .main-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        /* Academic Header Banner */
+        .academic-banner {
+            width: 100%;
+            height: 160px;
+            border-radius: 16px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1280&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px 40px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .academic-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.85);
+            z-index: 1;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .banner-accent-bar {
+            width: 80px;
+            height: 4px;
+            background-color: var(--color-accent);
+            margin-bottom: 12px;
+            border-radius: 2px;
+        }
+
+        .banner-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-accent);
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .banner-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+
+        .banner-description {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Floating User Profile inside Banner */
+        .user-floating-profile {
+            position: relative;
+            z-index: 2;
+            width: 220px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .profile-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-username {
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .profile-userrole {
+            font-size: 9px;
+            color: var(--color-accent);
+            margin-top: 1px;
+            font-weight: 500;
+        }
+
+        .profile-logout-btn {
+            margin-left: auto;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .profile-logout-btn:hover {
+            color: #EF4444;
+        }
+
+        /* Filter Controls & Search */
+        .workspace-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .table-search-input {
+            width: 320px;
+            height: 38px;
+            background-color: #ffffff;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 0 16px;
+            font-size: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .table-search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+        }
+
+        .pill-filter {
+            height: 38px;
+            background-color: #ffffff;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 0 24px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Card Grid Layout */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Grade Card */
+        .grade-card {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .grade-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        }
+
+        .grade-status-dot {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .grade-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text-dark);
+        }
+
+        .grade-teacher {
+            font-size: 13px;
+            color: var(--color-text-label);
+            font-weight: 500;
+        }
+
+        .grade-divider {
+            height: 1px;
+            background-color: var(--color-border);
+            width: 100%;
+            margin: 6px 0;
+        }
+
+        .student-count-pill {
+            background-color: #F1F5F9;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-emblem"></div>
+                <span class="brand-text">Instituto tal</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a href="/Index" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Docentes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Students" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                        <span>Estudiantes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Guardians" class="menu-link">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Acudientes</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="/Grades" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Grados</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-workspace">
+            <!-- Academic Header Banner -->
+            <section class="academic-banner">
+                <div class="banner-content">
+                    <div class="banner-accent-bar"></div>
+                    <span class="banner-subtitle">• PORTAL DE GESTIÓN Y COORDINACIÓN</span>
+                    <h1 class="banner-title">Grados</h1>
+                    <p class="banner-description">Organización de grados y profesores asignados.</p>
+                </div>
+                
+                <div class="user-floating-profile">
+                    <div class="profile-avatar">CB</div>
+                    <div class="profile-meta">
+                        <span class="profile-username">@User.Identity?.Name</span>
+                        <span class="profile-userrole">Coordinadora General</span>
+                    </div>
+                    <a href="/Logout" class="profile-logout-btn" title="Cerrar Sesión">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; transform: rotate(180deg);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Table Filters -->
+            <section class="workspace-controls">
+                <form method="get" class="search-container">
+                    <input asp-for="SearchTerm" class="table-search-input" placeholder="🔍  Buscar grados..." />
+                    <button type="submit" style="display: none;"></button>
+                </form>
+                <div class="pill-filter">Secundaria</div>
+                @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                {
+                    <a href="/Grades" class="btn-filter" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; height: 38px; border: 1px solid var(--color-border); border-radius: 8px; padding: 0 16px; font-size: 12px; color: var(--color-text-dark);">Limpiar</a>
+                }
+            </section>
+
+            <!-- Grades Cards Grid -->
+            <section class="cards-grid">
+                @if (!Model.Grades.Any())
+                {
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px; background: #ffffff; border-radius: 16px; border: 1px solid var(--color-border);">
+                        No se encontraron grados registrados con ese criterio.
+                    </div>
+                }
+                else
+                {
+                    @foreach (var grade in Model.Grades)
+                    {
+                        <div class="grade-card">
+                            <div class="grade-status-dot"></div>
+                            <h3 class="grade-title">@grade.Name</h3>
+                            <span class="grade-teacher">Docente: @grade.TeacherName</span>
+                            <div class="grade-divider"></div>
+                            <div class="student-count-pill">@grade.StudentCount Alumnos</div>
+                        </div>
+                    }
+                }
+            </section>
+        </main>
+    </div>
+</body>
+</html>
