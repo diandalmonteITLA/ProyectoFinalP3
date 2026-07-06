@@ -1,5 +1,5 @@
 using App.Core.Application.Mappings;
-using Microsoft.AspNetCore.Identity;
+using App.Infrastructure.Persistence;
 using App.Infrastructure.Identity;
 namespace Presentation
 {
@@ -14,6 +14,8 @@ namespace Presentation
             builder.Services.AddRazorPages();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            builder.Services.AddIdentityLayerIoc(builder.Configuration);
+            builder.Services.AddPersistenceLayerIoc(builder.Configuration);
             //builder.Services.AddAutoMapper(cfg => cfg.AddProfile<GradeMappingProfile>());
             var app = builder.Build();
 
@@ -31,6 +33,7 @@ namespace Presentation
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
