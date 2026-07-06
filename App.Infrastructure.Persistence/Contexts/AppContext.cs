@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Infrastructure.Persistence.Contexts
 {
-    public class AppContext :DbContext
+    public class AppContext : DbContext
     {
         public AppContext(DbContextOptions<AppContext> options): base(options) { }
 

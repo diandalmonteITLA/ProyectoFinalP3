@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36915.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Presentation\Web.csproj", "{007BBD5F-6C8A-4834-B069-8BE6B30AAD23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Presentation.Web", "Presentation\App.Presentation.Web.csproj", "{007BBD5F-6C8A-4834-B069-8BE6B30AAD23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Core.Application", "App.Core.Application\App.Core.Application.csproj", "{EEE37DB0-4F3E-43D7-A9BE-FB2756D4254D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Infrastructure.Persistence", "App.Infrastructure.Persistence\App.Infrastructure.Persistence.csproj", "{AB10AA9F-7033-4ABD-8F0A-989696267A08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Infrastructure.Identity", "App.Infrastructure.Identity\App.Infrastructure.Identity.csproj", "{575CBA0F-4DEE-C972-2A01-C327816FEF99}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{AB10AA9F-7033-4ABD-8F0A-989696267A08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB10AA9F-7033-4ABD-8F0A-989696267A08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB10AA9F-7033-4ABD-8F0A-989696267A08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{575CBA0F-4DEE-C972-2A01-C327816FEF99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{575CBA0F-4DEE-C972-2A01-C327816FEF99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{575CBA0F-4DEE-C972-2A01-C327816FEF99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{575CBA0F-4DEE-C972-2A01-C327816FEF99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{F47CB73E-94DA-4EC8-8073-C16BC34B24C3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{EEE37DB0-4F3E-43D7-A9BE-FB2756D4254D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{AB10AA9F-7033-4ABD-8F0A-989696267A08} = {953CA41E-E02F-447A-AC16-903754C6A475}
+		{575CBA0F-4DEE-C972-2A01-C327816FEF99} = {953CA41E-E02F-447A-AC16-903754C6A475}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {76C34115-50E7-4308-A6F3-9A583846E4E7}

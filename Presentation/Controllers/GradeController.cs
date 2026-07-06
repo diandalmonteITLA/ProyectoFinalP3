@@ -1,9 +1,9 @@
-﻿using App.Core.Application.DTOs;
+﻿using App.Core.Application.DTOs.Grades;
 using App.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers
+namespace App.Presentation.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
