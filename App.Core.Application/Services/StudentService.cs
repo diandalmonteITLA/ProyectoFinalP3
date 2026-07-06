@@ -10,6 +10,7 @@ namespace App.Core.Application.Services
     public class StudentService : IStudentService
     {
         private readonly IGenericRepository<Student> _studentRepository;
+<<<<<<< HEAD
         private readonly IAuditService _auditService;
 
         public StudentService(
@@ -18,6 +19,14 @@ namespace App.Core.Application.Services
         {
             _studentRepository = studentRepository ?? throw new ArgumentNullException(nameof(studentRepository));
             _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
+=======
+        private readonly IPhoneNumberValidator _phoneNumberValidator;
+
+        public StudentService(IGenericRepository<Student> studentRepository, IPhoneNumberValidator phoneNumberValidator)
+        {
+            _studentRepository = studentRepository ?? throw new ArgumentNullException(nameof(studentRepository));
+            _phoneNumberValidator = phoneNumberValidator ?? throw new ArgumentNullException(nameof(phoneNumberValidator));
+>>>>>>> 68113aa8950194b7daaef0c246b6e9cabe07e7f7
         }
 
         public async Task<Student?> GetByIdAsync(Guid id)
@@ -37,7 +46,15 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El estudiante no puede estar vacío.", nameof(student));
             }
 
+<<<<<<< HEAD
             // Guardar el estudiante
+=======
+            if (student.PhoneNumber is not null && !_phoneNumberValidator.ValidateNumber(student.PhoneNumber.Number))
+            {
+                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(student));
+            }
+
+>>>>>>> 68113aa8950194b7daaef0c246b6e9cabe07e7f7
             await _studentRepository.AddAsync(student);
 
             // Registrar auditoría
@@ -52,6 +69,11 @@ namespace App.Core.Application.Services
             if (student is null)
             {
                 throw new ArgumentException("El estudiante no puede estar vacío.", nameof(student));
+            }
+
+            if (student.PhoneNumber is not null && !_phoneNumberValidator.ValidateNumber(student.PhoneNumber.Number))
+            {
+                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(student));
             }
 
             var existingStudent = await _studentRepository.GetByIdAsync(student.Id);
