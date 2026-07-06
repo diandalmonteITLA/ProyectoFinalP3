@@ -1,4 +1,4 @@
-﻿using App.Core.Application.DTOs;
+﻿using App.Core.Application.DTOs.Grades;
 using App.Core.Application.Interfaces;
 using App.Core.Domain.Entities;
 using App.Core.Domain.Interfaces;

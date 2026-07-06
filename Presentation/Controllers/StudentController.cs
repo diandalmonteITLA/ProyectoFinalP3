@@ -1,8 +1,8 @@
-using App.Core.Application.DTOS.Students;
+using App.Core.Application.DTOs.Students;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation.Controllers
+namespace App.Presentation.Web.Controllers
 {
     [Authorize(Roles = "Coordinador")]
     [ApiController]

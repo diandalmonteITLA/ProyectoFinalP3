@@ -1,4 +1,4 @@
-﻿using App.Core.Application.DTOS.Students;
+﻿using App.Core.Application.DTOs.Students;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace App.Core.Application.DTOs.Teacher
 
         public string Email { get; set; } = string.Empty;
 
-        public PhoneNumberDto PhoneNumber { get; set; } = new();
+        public ICollection<PhoneNumberDto> PhoneNumbers { get; set; } = [];
 
     }
 }
