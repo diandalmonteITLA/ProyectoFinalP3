@@ -35,11 +35,6 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El estudiante no puede estar vacío.", nameof(student));
             }
 
-            if (student.PhoneNumber is not null && !_phoneNumberValidator.ValidateNumber(student.PhoneNumber.Number))
-            {
-                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(student));
-            }
-
             await _studentRepository.AddAsync(student);
         }
 
@@ -48,11 +43,6 @@ namespace App.Core.Application.Services
             if (student is null)
             {
                 throw new ArgumentException("El estudiante no puede estar vacío.", nameof(student));
-            }
-
-            if (student.PhoneNumber is not null && !_phoneNumberValidator.ValidateNumber(student.PhoneNumber.Number))
-            {
-                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(student));
             }
 
             var existingStudent = await _studentRepository.GetByIdAsync(student.Id);

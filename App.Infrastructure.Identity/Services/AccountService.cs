@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using App.Core.Application.DTOs.Email;
 using App.Core.Application.DTOs.User;
 using App.Core.Application.Interfaces;
@@ -10,18 +6,16 @@ using App.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.WebEncoders;
-using Org.BouncyCastle.Security;
 
 namespace App.Infrastructure.Identity.Services
 {
-    public class AccountServices
+    public class AccountService : IAccountService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IEmailService _emailService;
 
-        public AccountServices(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
+        public AccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -36,7 +30,7 @@ namespace App.Infrastructure.Identity.Services
             if (user == null)
             {
                 response.HasError = true;
-                response.Errors.Add($"No hay usuario registrado con este email: {loginDto.UserName}");
+                response.Errors.Add($"Email o contraseña incorrecta");
                 return response;
             }
 
@@ -84,7 +78,16 @@ namespace App.Infrastructure.Identity.Services
 
         public async Task<RegisterResponseDto> RegisterUser(RegisterUserDto registerUser, string origin)
         {
-            RegisterResponseDto response = new() { HasError = false, Errors = [] };
+            RegisterResponseDto response = new()
+            {
+                Email = "",
+                Id = "",
+                LastName = "",
+                Name = "",
+                UserName = "",
+                HasError = false,
+                Errors = []
+            };
 
             var userWithSameEmail = await _userManager.FindByNameAsync(registerUser.Email);
             if (userWithSameEmail != null)
@@ -115,13 +118,129 @@ namespace App.Infrastructure.Identity.Services
                     HtmlBody = $"Activa tu cuenta mediante este URL: {verificationUri}",
                     Subject = "Activa tu cuenta",
                 });
+
+                var rolesList = await _userManager.GetRolesAsync(user);
+
+                response.Id = user.Id;
+                response.Email = user.Email ?? "";
+                response.UserName = user.UserName ?? "";
+                response.Name = user.Name;
+                response.LastName = user.LastName;
+                response.IsVerified = user.EmailConfirmed;
+                response.Roles = rolesList.ToList();
+
+                return response;
             }
             else
             {
                 response.HasError = true;
-                response.Errors.Add("Un error ocurrió al intentar registrar al usuario.");
+                response.Errors.AddRange(result.Errors.Select(s => s.Description).ToList());
                 return response;
             }
+        }
+
+        public async Task<List<UserDto>> GetAllUser(bool? isActive = true)
+        {
+            // Fetch users first
+            var query = _userManager.Users;
+
+            if (isActive == true)
+            {
+                query = query.Where(w => w.EmailConfirmed);
+            }
+
+            var users = await query.ToListAsync();
+            var listUsersDtos = new List<UserDto>();
+
+            foreach (var item in users)
+            {
+                var roleList = await _userManager.GetRolesAsync(item);
+
+                listUsersDtos.Add(new UserDto()
+                {
+                    Id = item.Id,
+                    Email = item.Email ?? "",
+                    LastName = item.LastName,
+                    Name = item.Name,
+                    UserName = item.UserName ?? "",
+                    Phone = item.PhoneNumber,
+                    IsVerified = item.EmailConfirmed,
+                    Role = roleList.FirstOrDefault() ?? ""
+                });
+            }
+
+            return listUsersDtos;
+        }
+
+        public async Task<UserDto?> GetUserByUserName(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var rolesList = await _userManager.GetRolesAsync(user);
+
+            var userDto = new UserDto()
+            {
+                Id = user.Id,
+                Email = user.Email ?? "",
+                LastName = user.LastName,
+                Name = user.Name,
+                UserName = user.UserName ?? "",
+                Phone = user.PhoneNumber,
+                IsVerified = user.EmailConfirmed,
+                Role = rolesList.FirstOrDefault() ?? ""
+            };
+
+            return userDto;
+        }
+
+
+        public async Task<UserDto?> GetUserById(string Id)
+        {
+            var user = await _userManager.FindByIdAsync(Id);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var rolesList = await _userManager.GetRolesAsync(user);
+
+            var userDto = new UserDto()
+            {
+                Id = user.Id,
+                Email = user.Email ?? "",
+                LastName = user.LastName,
+                Name = user.Name,
+                UserName = user.UserName ?? "",
+                Phone = user.PhoneNumber,
+                IsVerified = user.EmailConfirmed,
+                Role = rolesList.FirstOrDefault() ?? ""
+            };
+
+            return userDto;
+        }
+
+
+        public async Task<UserResponseDto> DeleteAsync(string id)
+        {
+            UserResponseDto response = new() { HasError = false, Errors = [] };
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                response.HasError = true;
+                response.Errors.Add($"No hay cuenta registrada con este Id");
+                return response;
+            }
+
+            await _userManager.DeleteAsync(user);
+
+            return response;
         }
 
         public async Task<string> ConfirmAccountAsync(string userId, string token)
@@ -130,7 +249,7 @@ namespace App.Infrastructure.Identity.Services
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return "No hay una cuenta registrada con este email";
+                return "Email o contraseña incorrecta";
             }
 
             token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
@@ -173,7 +292,7 @@ namespace App.Infrastructure.Identity.Services
             if (user == null)
             {
                 response.HasError = true;
-                response.Errors.Add($"There is no acccount registered with this user");
+                response.Errors.Add($"No hay cuenta registrada con este Id");
                 return response;
             }
 
@@ -212,8 +331,8 @@ namespace App.Infrastructure.Identity.Services
                     await _emailService.SendAsync(new EmailRequestDto()
                     {
                         To = registerUser.Email,
-                        HtmlBody = $"Please confirm yout account visiting this URL {verificationUri}",
-                        Subject = "Confirm registration"
+                        HtmlBody = $"Activa tu cuenta mediante este URL: {verificationUri}",
+                        Subject = "Activa tu cuenta"
                     });
                 }
 
@@ -247,7 +366,7 @@ namespace App.Infrastructure.Identity.Services
             var completeUrl = new Uri(string.Concat($"{origin}/", route));
             var verificationUri = QueryHelpers.AddQueryString(completeUrl.ToString(), "userId", user.Id);
             verificationUri = QueryHelpers.AddQueryString(verificationUri.ToString(), "token", token);
-            return "";
+            return verificationUri;
         }
         #endregion
     }

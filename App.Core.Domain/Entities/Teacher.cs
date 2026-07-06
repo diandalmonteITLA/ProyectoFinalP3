@@ -14,6 +14,7 @@ namespace App.Core.Domain.Entities
         public required ICollection<PhoneNumber> PhoneNumbers { get; set; }
         public required string Email { get; set; }
         public required string HashedPassword { get; set; }
+        public required bool IsActive { get; set; }
 
         public ICollection<Grade>? ManagedGrades { get; set; }
 

@@ -5,10 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace App.Presentation.Web.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     [Authorize(Roles = "Coordinator")]
-    public class GradeController : ControllerBase
+    public class GradeController : Controller
     {
         private readonly IGradeService _gradeService;
 
@@ -18,37 +16,51 @@ namespace App.Presentation.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyCollection<GradeDto>>> GetAll()
+        public async Task<IActionResult> Index()
         {
             var grades = await _gradeService.GetAllAsync();
-            return Ok(grades);
+            return View(grades);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<GradeDto>> GetById(Guid id)
+
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
         {
             var grade = await _gradeService.GetByIdAsync(id);
 
             if (grade == null)
                 return NotFound($"No se encontró el curso con Id {id}.");
 
-            return Ok(grade);
+            return View(grade);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGradeDto dto)
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var grade = await _gradeService.GetByIdAsync(id);
+
+            if (grade == null)
+                return NotFound();
+
+            // Note: If your View uses UpdateGradeDto, you should map 'grade' to 'UpdateGradeDto' here before passing it to the view.
+            return View(grade);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Guid id, UpdateGradeDto dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return View(dto); 
 
             try
             {
                 await _gradeService.UpdateAsync(id, dto);
-                return NoContent();
+                return RedirectToAction(nameof(Index));
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ex.Message);
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(dto);
             }
         }
     }

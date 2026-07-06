@@ -1,6 +1,8 @@
-﻿using App.Infrastructure.Identity.Context;
+﻿using App.Core.Application.Interfaces;
+using App.Infrastructure.Identity.Context;
 using App.Infrastructure.Identity.Entities;
 using App.Infrastructure.Identity.Seeds;
+using App.Infrastructure.Identity.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -53,6 +55,8 @@ namespace App.Infrastructure.Identity
                 opt.LoginPath = "/Login";
                 opt.AccessDeniedPath = "/Login/AccessDenied";
             });
+
+            services.AddScoped<IAccountService, AccountService>();
         }
 
         public static async Task RunIdentitySeedAsync(this IServiceProvider service)

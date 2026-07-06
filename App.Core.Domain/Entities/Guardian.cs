@@ -13,6 +13,7 @@ namespace App.Core.Domain.Entities
         public required string LastName { get; set; }
         public required ICollection<PhoneNumber> PhoneNumbers { get; set; }
         public required string Email { get; set; }
+        public required bool IsActive { get; set; }
 
 
         public ICollection<Student>? Students { get; set; }

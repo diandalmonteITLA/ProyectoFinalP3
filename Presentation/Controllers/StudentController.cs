@@ -5,57 +5,86 @@ using Microsoft.AspNetCore.Mvc;
 namespace App.Presentation.Web.Controllers
 {
     [Authorize(Roles = "Coordinator")]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class StudentController : ControllerBase
+    public class StudentController : Controller
     {
-        // GET: api/Student
+        // GET: Student
         [HttpGet]
-        public ActionResult<IEnumerable<StudentDto>> GetAll()
+        public IActionResult Index()
         {
             // TODO: Implement logic to retrieve all students
-            return Ok(new List<StudentDto>());
+            var students = new List<StudentDto>();
+            return View(students);
         }
 
-        // GET: api/Student/{id}
-        [HttpGet("{id}")]
-        public ActionResult<StudentDto> GetById(Guid id)
+        // GET: Student/Details/{id}
+        [HttpGet]
+        public IActionResult Details(Guid id)
         {
             // TODO: Implement logic to retrieve a student by ID
-            return Ok(new StudentDto { Name = "", LastName = "" });
+            var student = new StudentDto { Name = "", LastName = "" };
+            return View(student);
         }
 
-        // POST: api/Student
-        [HttpPost]
-        public ActionResult<StudentDto> Create([FromBody] CreateStudentDto createStudentDto)
+        // GET: Student/Create
+        [HttpGet]
+        public IActionResult Create()
         {
+            return View(); // Displays the creation form
+        }
+
+        // POST: Student/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(CreateStudentDto createStudentDto)
+        {
+            if (!ModelState.IsValid)
+                return View(createStudentDto); // Return to form with validation errors
+
             // TODO: Implement logic to create a new student
             var newStudent = new StudentDto { Name = createStudentDto.Name, LastName = createStudentDto.LastName };
-            return CreatedAtAction(nameof(GetById), new { id = Guid.NewGuid() }, newStudent);
+
+            return RedirectToAction(nameof(Index)); // Redirect to the list after success
         }
 
-        // PUT: api/Student/{id}
-        [HttpPut("{id}")]
-        public ActionResult<StudentDto> Update(Guid id, [FromBody] UpdateStudentDto updateStudentDto)
+        // GET: Student/Edit/{id}
+        [HttpGet]
+        public IActionResult Edit(Guid id)
         {
+            // TODO: Implement logic to retrieve a student to populate the edit form
+            var studentToEdit = new UpdateStudentDto();
+            return View(studentToEdit);
+        }
+
+        // POST: Student/Edit/{id}
+        [HttpPost]
+        public IActionResult Edit(Guid id, UpdateStudentDto updateStudentDto)
+        {
+            if (!ModelState.IsValid)
+                return View(updateStudentDto);
+
             // TODO: Implement logic to update a student
-            return Ok(new StudentDto { Name = updateStudentDto.Name, LastName = updateStudentDto.LastName });
+            // (In MVC, this typically handles both the full and partial update logic)
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // PATCH: api/Student/{id}
-        [HttpPatch("{id}")]
-        public ActionResult<StudentDto> PartialUpdate(Guid id, [FromBody] UpdateStudentDto updateStudentDto)
+        // GET: Student/Delete/{id}
+        [HttpGet]
+        public IActionResult Delete(Guid id)
         {
-            // TODO: Implement logic to partially update a student
-            return Ok(new StudentDto { Name = updateStudentDto.Name, LastName = updateStudentDto.LastName });
+            // TODO: Implement logic to retrieve a student to confirm deletion
+            var student = new StudentDto { Name = "", LastName = "" };
+            return View(student); // Shows a "Are you sure you want to delete this?" page
         }
 
-        // DELETE: api/Student/{id}
-        [HttpDelete("{id}")]
-        public ActionResult Delete(Guid id)
+        // POST: Student/Delete/{id}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(Guid id)
         {
             // TODO: Implement logic to delete a student
-            return NoContent();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
