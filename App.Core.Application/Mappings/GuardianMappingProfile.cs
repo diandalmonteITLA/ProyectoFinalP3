@@ -1,6 +1,5 @@
 using AutoMapper;
-using App.Core.Application.DTOS.Guardians;
-using App.Core.Application.DTOS.Students;
+using App.Core.Application.DTOs.Guardians;
 using App.Core.Domain.Entities;
 
 namespace App.Core.Application.Mappings

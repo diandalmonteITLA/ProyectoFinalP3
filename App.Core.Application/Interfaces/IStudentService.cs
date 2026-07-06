@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using App.Core.Application.DTOS.Students;
+using App.Core.Application.DTOs.Students;
 
 namespace App.Core.Application.Interfaces
 {

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using App.Infrastructure.Identity;
 using AutoMapper;
 using App.Core.Application.Interfaces;
-using App.Core.Application.Mappings;
 using App.Core.Application.Services;
 
 namespace Presentation

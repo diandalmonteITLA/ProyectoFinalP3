@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace App.Core.Application.Services
 {
-    public class TeacherService 
+    public class TeacherService : ITeacherService
     {
         private readonly IGenericRepository<Teacher> _teacherRepository;
         private readonly IMapper _mapper;

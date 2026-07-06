@@ -11,8 +11,6 @@ namespace App.Core.Application.DTOs.Students
         public Guid Id { get; set; }
         public required string Name { get; set; }
         public required string LastName { get; set; }
-        public PhoneNumberDto? PhoneNumber { get; set; }
-        public string? Email { get; set; }
         public Guid GradeId { get; set; }
         public string? GradeName { get; set; }
         public List<GuardianSummaryDto> Guardians { get; set; } = new();

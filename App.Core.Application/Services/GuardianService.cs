@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using App.Core.Application.DTOS.Guardians;
+using App.Core.Application.DTOs;
+using App.Core.Application.DTOs.Guardians;
 using App.Core.Application.Interfaces;
 using App.Core.Domain.Entities;
 using App.Core.Domain.Interfaces;
@@ -47,16 +48,16 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El encargado debe tener al menos un número de teléfono.", nameof(createGuardianDto));
             }
 
-            foreach (PhoneNumber pNumber in guardian.PhoneNumbers)
+            foreach (PhoneNumberDto pNumber in createGuardianDto.PhoneNumbers)
             {
                 if (!_phoneNumberValidator.ValidateNumber(pNumber.Number))
                 {
-                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(createGuardianDto));
                 }
             }
  
 
-            await _guardianRepository.AddAsync(guardian);
+            await _guardianRepository.AddAsync(_mapper.Map<Guardian>(createGuardianDto));
         }
 
         public async Task UpdateAsync(UpdateGuardianDto updateGuardianDto)
@@ -71,11 +72,11 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El encargado debe tener al menos un número de teléfono.", nameof(updateGuardianDto));
             }
 
-            foreach (PhoneNumber pNumber in guardian.PhoneNumbers)
+            foreach (PhoneNumberDto pNumber in updateGuardianDto.PhoneNumbers)
             {
                 if (!_phoneNumberValidator.ValidateNumber(pNumber.Number))
                 {
-                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(updateGuardianDto));
                 }
             }
 
