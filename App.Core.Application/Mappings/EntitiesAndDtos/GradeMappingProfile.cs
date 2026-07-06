@@ -2,7 +2,7 @@
 using App.Core.Domain.Entities;
 using AutoMapper;
 
-namespace App.Core.Application.Mappings
+namespace App.Core.Application.Mappings.EntitiesAndDtos
 {
     public class GradeMappingProfile : Profile
     {

@@ -1,4 +1,5 @@
-﻿using App.Infrastructure.Persistence;
+﻿using App.Infrastructure.Persistence.Contexts;
+using App.Infrastructure.Persistence.Repositories;
 using App.Core.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,17 +13,17 @@ namespace App.Infrastructure.Persistence
         {
             if (config.GetValue<bool>("UseInMemoryDatabase"))
             {
-                services.AddDbContext<AppContext>(opt =>
+                services.AddDbContext<AppDbContext>(opt =>
                 opt.UseInMemoryDatabase("AppDb"));
             }
             else
             {
                 var connectionString = config.GetConnectionString("DefaultConnection");
-                services.AddDbContext<AppContext>(
+                services.AddDbContext<AppDbContext>(
                     (serviceProvider, opt) =>
                     {
                         opt.UseSqlServer(connectionString,
-                        m => m.MigrationsAssembly(typeof(AppContext).Assembly.FullName));
+                        m => m.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
                     },
                     contextLifetime: ServiceLifetime.Scoped,
                     optionsLifetime: ServiceLifetime.Scoped

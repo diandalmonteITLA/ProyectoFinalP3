@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Infrastructure.Persistence.Contexts
 {
-    public class AppContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public AppContext(DbContextOptions<AppContext> options): base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options): base(options) { }
 
         public DbSet<Student> Students { get; set; }
         public DbSet<Guardian> Guardians { get; set; }

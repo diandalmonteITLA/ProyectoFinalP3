@@ -4,18 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Core.Domain.Entities
+namespace App.Core.Application.DTOs.User
 {
-    public class Guardian
+    public class RegisterUserDto
     {
-        public Guid Id { get; set; }
+        public required string Id { get; set; }
         public required string Name { get; set; }
         public required string LastName { get; set; }
-        public required ICollection<PhoneNumber> PhoneNumbers { get; set; }
         public required string Email { get; set; }
-        public required bool IsActive { get; set; }
-
-
-        public ICollection<Student>? Students { get; set; }
+        public required string Password { get; set; }
+        public string? Phone { get; set; }
+        public required string Role { get; set; }
     }
 }

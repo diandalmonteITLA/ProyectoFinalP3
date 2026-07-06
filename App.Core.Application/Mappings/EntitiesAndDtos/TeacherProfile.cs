@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using App.Core.Application.DTOs;
 
-namespace App.Core.Application.Mappings
+namespace App.Core.Application.Mappings.EntitiesAndDtos
 {
     public class TeacherProfile: Profile
     {

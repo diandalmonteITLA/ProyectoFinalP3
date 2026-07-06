@@ -1,5 +1,8 @@
-﻿using App.Infrastructure.Identity.Context;
+﻿using App.Core.Application.Interfaces;
+using App.Infrastructure.Identity.Context;
 using App.Infrastructure.Identity.Entities;
+using App.Infrastructure.Identity.Seeds;
+using App.Infrastructure.Identity.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,7 +34,7 @@ namespace App.Infrastructure.Identity
 
             services.AddIdentityCore<AppUser>()
                 .AddRoles<IdentityRole>()
-                .AddSignInManager() // <-- Will now compile with the FrameworkReference added
+                .AddSignInManager()
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
 
@@ -52,6 +55,23 @@ namespace App.Infrastructure.Identity
                 opt.LoginPath = "/Login";
                 opt.AccessDeniedPath = "/Login/AccessDenied";
             });
+
+            services.AddScoped<IAccountService, AccountService>();
+        }
+
+        public static async Task RunIdentitySeedAsync(this IServiceProvider service)
+        {
+            using (var scope = service.CreateScope())
+            {
+                var servicesProvider = scope.ServiceProvider;
+
+                var userManager = servicesProvider.GetRequiredService<UserManager<AppUser>>();
+                var roleManager = servicesProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                await DefaultRoles.SeedAsync(roleManager);
+                await DefaultAdminUser.SeedAsync(userManager);
+                await DefaultCoordinatorUser.SeedAsync(userManager);
+            }
         }
 
         private static void GeneralConfiguration(IServiceCollection services, IConfiguration config)

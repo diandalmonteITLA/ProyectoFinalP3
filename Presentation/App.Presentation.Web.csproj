@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\App.Core.Application\App.Core.Application.csproj" />
+    <ProjectReference Include="..\App.Infrastructure.Identity\App.Infrastructure.Identity.csproj" />
+    <ProjectReference Include="..\App.Infrastructure.Persistence\App.Infrastructure.Persistence.csproj" />
     <PackageReference Include="AutoMapper" Version="16.2.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
   </ItemGroup>
