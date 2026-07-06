@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace App.Presentation.Web.Controllers
 {
-    [Authorize(Roles = "Coordinador")]
+    [Authorize(Roles = "Coordinator")]
     [ApiController]
     [Route("api/[controller]")]
     public class StudentController : ControllerBase

@@ -7,7 +7,7 @@ namespace App.Presentation.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Coordinador")]
+    [Authorize(Roles = "Coordinator")]
     public class GradeController : ControllerBase
     {
         private readonly IGradeService _gradeService;
