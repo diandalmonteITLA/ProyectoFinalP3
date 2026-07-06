@@ -1,9 +1,9 @@
-using App.Core.Application.DTOS.Students;
+using App.Core.Application.DTOs.Students;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace App.Core.Application.DTOS.Guardians
+namespace App.Core.Application.DTOs.Guardians
 {
     public class UpdateGuardianDto
     {

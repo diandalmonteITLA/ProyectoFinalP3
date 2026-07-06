@@ -20,11 +20,6 @@ namespace App.Core.Application.DTOs.Students
         [StringLength(100, ErrorMessage = "El apellido no puede exceder los 100 caracteres.")]
         public string LastName { get; set; } = string.Empty;
 
-        public PhoneNumberDto? PhoneNumber { get; set; }
-
-        [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
-        public string? Email { get; set; }
-
         [Required(ErrorMessage = "El grado es obligatorio.")]
         public Guid GradeId { get; set; }
 

@@ -1,6 +1,7 @@
 using AutoMapper;
-using App.Core.Application.DTOS.Students;
+using App.Core.Application.DTOs.Students;
 using App.Core.Domain.Entities;
+using App.Core.Application.DTOs;
 
 namespace App.Core.Application.Mappings
 {
@@ -10,24 +11,17 @@ namespace App.Core.Application.Mappings
         {
             // Entity to DTO
             CreateMap<Student, StudentDto>()
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber != null ? 
-                    new PhoneNumberDto { Number = src.PhoneNumber.Number, Type = src.PhoneNumber.Type } : null))
                 .ForMember(dest => dest.GradeName, opt => opt.MapFrom(src => src.Grade != null ? src.Grade.Name : null));
 
             // DTO to Entity (Create)
             CreateMap<CreateStudentDto, Student>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber != null ? 
-                    new PhoneNumber { Number = src.PhoneNumber.Number, Type = src.PhoneNumber.Type } : null));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()));
 
             // DTO to Entity (Update)
-            CreateMap<UpdateStudentDto, Student>()
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber != null ? 
-                    new PhoneNumber { Number = src.PhoneNumber.Number, Type = src.PhoneNumber.Type } : null));
+            CreateMap<UpdateStudentDto, Student>().ReverseMap();
 
             // PhoneNumber mapping
-            CreateMap<PhoneNumber, PhoneNumberDto>();
-            CreateMap<PhoneNumberDto, PhoneNumber>();
+            CreateMap<PhoneNumber, PhoneNumberDto>().ReverseMap();
         }
     }
 }
