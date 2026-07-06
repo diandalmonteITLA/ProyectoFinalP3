@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using App.Core.Domain.Entities;
+using App.Core.Application.DTOs.Guardians;
 
 namespace App.Core.Application.Interfaces
 {
     public interface IGuardianService
     {
-        Task<Guardian?> GetByIdAsync(Guid id);
-        Task<IReadOnlyCollection<Guardian>> GetAllAsync(bool includeInactive = false);
-        Task AddAsync(Guardian guardian);
-        Task UpdateAsync(Guardian guardian);
+        Task<GuardianDto?> GetByIdAsync(Guid id);
+        Task<IReadOnlyCollection<GuardianDto>> GetAllAsync(bool includeInactive = false);
+        Task AddAsync(CreateGuardianDto createGuardianDto);
+        Task UpdateAsync(UpdateGuardianDto updateGuardianDto);
         Task DeactivateAsync(Guid id);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,16 +11,12 @@ namespace App.Core.Application.DTOs.Students
     {
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(100, ErrorMessage = "El nombre no puede exceder los 100 caracteres.")]
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El apellido es obligatorio.")]
         [StringLength(100, ErrorMessage = "El apellido no puede exceder los 100 caracteres.")]
-        public required string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
-        public PhoneNumberDto? PhoneNumber { get; set; }
-
-        [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
-        public string? Email { get; set; }
 
         [Required(ErrorMessage = "El grado es obligatorio.")]
         public Guid GradeId { get; set; }
