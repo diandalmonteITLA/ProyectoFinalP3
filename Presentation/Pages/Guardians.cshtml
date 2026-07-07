@@ -1,0 +1,791 @@
+@page
+@model Presentation.Pages.GuardiansModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Acudientes Registrados";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema Académico</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+    <style>
+        :root {
+            --color-bg-page: #F8FAFC;
+            --color-sidebar-bg: #0B0F19;
+            --color-accent: #D97706;
+            --color-text-dark: #0F172A;
+            --color-text-muted: #94A3B8;
+            --color-text-label: #475569;
+            --color-border: #E2E8F0;
+            --color-card-bg: #FFFFFF;
+            --color-input-bg: #F8FAFC;
+            --color-success-bg: #F0FDF4;
+            --color-success-text: #166534;
+            --color-success-border: #BBF7D0;
+            --color-error-bg: #FEF2F2;
+            --color-error-text: #991B1B;
+            --color-error-border: #FCA5A5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-bg-page);
+            color: var(--color-text-dark);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--color-sidebar-bg);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 36px 0;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            margin-bottom: 48px;
+        }
+
+        .brand-emblem {
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-accent);
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 16px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #94A3B8;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .menu-link svg {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .menu-item.active .menu-link {
+            color: #ffffff;
+            background-color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        .main-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .academic-banner {
+            width: 100%;
+            height: 160px;
+            border-radius: 16px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1280&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px 40px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .academic-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 15, 25, 0.85);
+            z-index: 1;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .banner-accent-bar {
+            width: 80px;
+            height: 4px;
+            background-color: var(--color-accent);
+            margin-bottom: 12px;
+            border-radius: 2px;
+        }
+
+        .banner-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-accent);
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .banner-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+
+        .banner-description {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .user-floating-profile {
+            position: relative;
+            z-index: 2;
+            width: 220px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .profile-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-username {
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .profile-userrole {
+            font-size: 9px;
+            color: var(--color-accent);
+            margin-top: 1px;
+            font-weight: 500;
+        }
+
+        .profile-logout-btn {
+            margin-left: auto;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .profile-logout-btn:hover {
+            color: #EF4444;
+        }
+
+        .workspace-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .table-search-input {
+            width: 320px;
+            height: 38px;
+            background-color: #ffffff;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 0 16px;
+            font-size: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .table-search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+        }
+
+        .btn-register-docente {
+            height: 38px;
+            background-color: #0B0F19;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 0 24px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-register-docente:hover {
+            background-color: #1e293b;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+        }
+
+        .table-card {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+            overflow: hidden;
+        }
+
+        .teachers-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .teachers-table th {
+            padding: 18px 24px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-text-label);
+            border-bottom: 1px solid var(--color-border);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: #FAFBFD;
+        }
+
+        .teachers-table td {
+            padding: 18px 24px;
+            font-size: 13px;
+            color: var(--color-text-dark);
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: middle;
+        }
+
+        .teacher-cell {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar-circle {
+            width: 36px;
+            height: 36px;
+            background-color: #F1F5F9;
+            border: 1px solid var(--color-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .teacher-name-bold {
+            font-weight: 700;
+            color: var(--color-text-dark);
+        }
+
+        .action-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-action-icon {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #94A3B8;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-action-icon:hover {
+            color: #0F172A;
+        }
+
+        .btn-action-icon.btn-delete:hover {
+            color: #EF4444;
+        }
+
+        .btn-action-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .drawer-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .drawer-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .drawer-form-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 420px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: -8px 0 32px rgba(15, 23, 42, 0.15);
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            transform: translate3d(100%, 0, 0);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px 32px;
+        }
+
+        .drawer-form-panel.open {
+            transform: translate3d(0, 0, 0);
+        }
+
+        .drawer-header {
+            margin-bottom: 32px;
+        }
+
+        .drawer-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text-dark);
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .drawer-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .drawer-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-label);
+        }
+
+        .drawer-input {
+            width: 100%;
+            height: 42px;
+            background-color: var(--color-input-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 0 16px;
+            font-size: 13px;
+            color: var(--color-text-dark);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .drawer-input:focus {
+            background-color: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+        }
+
+        .drawer-footer {
+            margin-top: 32px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-drawer-cancel {
+            flex: 1;
+            height: 46px;
+            background-color: var(--color-input-bg);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-dark);
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-drawer-cancel:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn-drawer-submit {
+            flex: 1;
+            height: 46px;
+            background-color: #0B0F19;
+            color: #ffffff;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-drawer-submit:hover {
+            background-color: #1e293b;
+        }
+
+        .alert-success {
+            background-color: var(--color-success-bg);
+            border: 1px solid var(--color-success-border);
+            color: var(--color-success-text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .alert-danger {
+            background-color: var(--color-error-bg);
+            border: 1px solid var(--color-error-border);
+            color: var(--color-error-text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-emblem"></div>
+                <span class="brand-text">Instituto tal</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a href="/Index" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Docentes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Students" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                        <span>Estudiantes</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="/Guardians" class="menu-link">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Acudientes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Grades" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Grados</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-workspace">
+            <section class="academic-banner">
+                <div class="banner-content">
+                    <div class="banner-accent-bar"></div>
+                    <span class="banner-subtitle">• PORTAL DE GESTIÓN Y COORDINACIÓN</span>
+                    <h1 class="banner-title">Acudientes Registrados</h1>
+                    <p class="banner-description">Administración y control de los tutores y acudientes autorizados.</p>
+                </div>
+                
+                <div class="user-floating-profile">
+                    <div class="profile-avatar">CB</div>
+                    <div class="profile-meta">
+                        <span class="profile-username">Carmen Brandao</span>
+                        <span class="profile-userrole">Coordinadora General</span>
+                    </div>
+                    <a href="/Login?handler=Logout" class="profile-logout-btn" title="Cerrar Sesión">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; transform: rotate(180deg);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </a>
+                </div>
+            </section>
+
+            @if (!string.IsNullOrEmpty(Model.ActionSuccess))
+            {
+                <div class="alert-success">@Model.ActionSuccess</div>
+            }
+            @if (!string.IsNullOrEmpty(Model.ActionError))
+            {
+                <div class="alert-danger">@Model.ActionError</div>
+            }
+
+            <section class="workspace-controls">
+                <form method="get" class="search-container">
+                    <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="table-search-input" placeholder="🔍  Buscar acudiente..." />
+                    <button type="submit" style="display:none;"></button>
+                </form>
+                <button class="btn-register-docente" onclick="openCreateDrawer()">
+                    + Registrar Acudiente
+                </button>
+            </section>
+
+            <section class="table-card">
+                <table class="teachers-table">
+                    <thead>
+                        <tr>
+                            <th>Acudiente</th>
+                            <th>Número Telefónico</th>
+                            <th>Correo Electrónico</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guardiansTableBody">
+                        @foreach (var g in Model.Guardians)
+                        {
+                            var phone = g.Phone;
+                            var initials = (g.Name.Length > 0 ? g.Name[0].ToString() : "") + (g.LastName.Length > 0 ? g.LastName[0].ToString() : "");
+                            <tr class="guardian-row">
+                                <td>
+                                    <div class="teacher-cell">
+                                        <div class="avatar-circle">@initials.ToUpper()</div>
+                                        <span class="teacher-name-bold">@g.Name @g.LastName</span>
+                                    </div>
+                                </td>
+                                <td>@phone</td>
+                                <td>@g.Email</td>
+                                <td>
+                                    <div class="action-group">
+                                        <button class="btn-action-icon" type="button" title="Editar" onclick="openEditDrawer('@g.Id', '@g.Name', '@g.LastName', '@g.Email', '@phone')">
+                                            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                        </button>
+                                        <button class="btn-action-icon btn-delete" type="button" title="Eliminar" onclick="deleteRow('@g.Id')">
+                                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.Guardians.Any())
+                        {
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--color-text-muted); padding: 30px;">
+                                    No se encontraron acudientes en el sistema.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeAllDrawers()"></div>
+    
+    <div class="drawer-form-panel" id="addDrawerPanel">
+        <div class="drawer-header">
+            <h2 class="drawer-title">Registrar Nuevo Acudiente</h2>
+        </div>
+        
+        <form method="post" asp-page-handler="Add">
+            <div class="drawer-body">
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Nombre</label>
+                    <input type="text" asp-for="NewGuardian.Name" class="drawer-input" placeholder="ej. Luis" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Apellido</label>
+                    <input type="text" asp-for="NewGuardian.LastName" class="drawer-input" placeholder="ej. Beltrán" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Correo Electrónico</label>
+                    <input type="email" asp-for="NewGuardian.Email" class="drawer-input" placeholder="ej. l.beltran@correo.com" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Número Telefónico</label>
+                    <input type="text" asp-for="NewGuardian.Phone" class="drawer-input" placeholder="ej. 809-909-1023" required />
+                </div>
+            </div>
+            
+            <div class="drawer-footer">
+                <button type="button" class="btn-drawer-cancel" onclick="closeAllDrawers()">Cancelar</button>
+                <button type="submit" class="btn-drawer-submit">Guardar Acudiente</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="drawer-form-panel" id="editDrawerPanel">
+        <div class="drawer-header">
+            <h2 class="drawer-title">Modificar Acudiente</h2>
+        </div>
+        
+        <form method="post" asp-page-handler="Edit">
+            <input type="hidden" asp-for="EditingGuardian.Id" id="field-edit-id" />
+            <div class="drawer-body">
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Nombre</label>
+                    <input type="text" asp-for="EditingGuardian.Name" id="field-edit-name" class="drawer-input" placeholder="ej. Luis" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Apellido</label>
+                    <input type="text" asp-for="EditingGuardian.LastName" id="field-edit-lastname" class="drawer-input" placeholder="ej. Beltrán" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Correo Electrónico</label>
+                    <input type="email" asp-for="EditingGuardian.Email" id="field-edit-email" class="drawer-input" placeholder="ej. l.beltran@correo.com" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Número Telefónico</label>
+                    <input type="text" asp-for="EditingGuardian.Phone" id="field-edit-phone" class="drawer-input" placeholder="ej. 809-909-1023" required />
+                </div>
+            </div>
+            
+            <div class="drawer-footer">
+                <button type="button" class="btn-drawer-cancel" onclick="closeAllDrawers()">Cancelar</button>
+                <button type="submit" class="btn-drawer-submit">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+
+    <form method="post" asp-page-handler="Delete" id="deleteForm" style="display:none;">
+        <input type="hidden" asp-for="DeletingGuardianId" id="field-delete-id" />
+    </form>
+
+    <script>
+        const backdrop = document.getElementById('drawerBackdrop');
+        const addPanel = document.getElementById('addDrawerPanel');
+        const editPanel = document.getElementById('editDrawerPanel');
+
+        function openCreateDrawer() {
+            closeAllDrawers();
+            backdrop.classList.add('open');
+            addPanel.classList.add('open');
+        }
+
+        function openEditDrawer(id, name, lastname, email, phone) {
+            closeAllDrawers();
+            document.getElementById('field-edit-id').value = id;
+            document.getElementById('field-edit-name').value = name;
+            document.getElementById('field-edit-lastname').value = lastname;
+            document.getElementById('field-edit-email').value = email;
+            document.getElementById('field-edit-phone').value = phone;
+
+            backdrop.classList.add('open');
+            editPanel.classList.add('open');
+        }
+
+        function closeAllDrawers() {
+            backdrop.classList.remove('open');
+            addPanel.classList.remove('open');
+            editPanel.classList.remove('open');
+        }
+
+        function deleteRow(id) {
+            if (confirm('¿Está seguro de que desea eliminar a este acudiente del sistema?')) {
+                document.getElementById('field-delete-id').value = id;
+                document.getElementById('deleteForm').submit();
+            }
+        }
+    </script>
+</body>
+</html>

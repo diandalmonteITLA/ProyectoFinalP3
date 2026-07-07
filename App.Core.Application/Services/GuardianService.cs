@@ -1,9 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using App.Core.Application.DTOs;
+using App.Core.Application.DTOs.Guardians;
 using App.Core.Application.Interfaces;
 using App.Core.Domain.Entities;
 using App.Core.Domain.Interfaces;
+using AutoMapper;
 
 namespace App.Core.Application.Services
 {
@@ -11,74 +15,79 @@ namespace App.Core.Application.Services
     {
         private readonly IGenericRepository<Guardian> _guardianRepository;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
+        private readonly IMapper _mapper;
 
-        public GuardianService(IGenericRepository<Guardian> guardianRepository, IPhoneNumberValidator phoneNumberValidator)
+        public GuardianService(IGenericRepository<Guardian> guardianRepository, IPhoneNumberValidator phoneNumberValidator, IMapper mapper)
         {
             _guardianRepository = guardianRepository ?? throw new ArgumentNullException(nameof(guardianRepository));
             _phoneNumberValidator = phoneNumberValidator ?? throw new ArgumentNullException(nameof(phoneNumberValidator));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<Guardian?> GetByIdAsync(Guid id)
+        public async Task<GuardianDto?> GetByIdAsync(Guid id)
         {
-            return await _guardianRepository.GetByIdAsync(id);
+            var guardian = await _guardianRepository.GetByIdAsync(id);
+            return guardian != null ? _mapper.Map<GuardianDto>(guardian) : null;
         }
 
-        public async Task<IReadOnlyCollection<Guardian>> GetAllAsync(bool includeInactive = false)
+        public async Task<IReadOnlyCollection<GuardianDto>> GetAllAsync(bool includeInactive = false)
         {
-            return await _guardianRepository.GetAllAsync(includeInactive);
+            var guardians = await _guardianRepository.GetAllAsync(includeInactive);
+            return _mapper.Map<IReadOnlyCollection<GuardianDto>>(guardians);
         }
 
-        public async Task AddAsync(Guardian guardian)
+        public async Task AddAsync(CreateGuardianDto createGuardianDto)
         {
-            if (guardian is null)
+            if (createGuardianDto is null)
             {
-                throw new ArgumentException("El encargado no puede estar vacío.", nameof(guardian));
+                throw new ArgumentException("El encargado no puede estar vacío.", nameof(createGuardianDto));
             }
 
-            if (guardian.PhoneNumbers == null || !guardian.PhoneNumbers.Any())
+            if (createGuardianDto.PhoneNumbers == null || !createGuardianDto.PhoneNumbers.Any())
             {
-                throw new ArgumentException("El encargado debe tener al menos un número de teléfono.", nameof(guardian));
+                throw new ArgumentException("El encargado debe tener al menos un número de teléfono.", nameof(createGuardianDto));
             }
 
-            foreach (PhoneNumber pNumber in guardian.PhoneNumbers)
+            foreach (PhoneNumberDto pNumber in createGuardianDto.PhoneNumbers)
             {
                 if (!_phoneNumberValidator.ValidateNumber(pNumber.Number))
                 {
-                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(createGuardianDto));
                 }
             }
  
 
-            await _guardianRepository.AddAsync(guardian);
+            await _guardianRepository.AddAsync(_mapper.Map<Guardian>(createGuardianDto));
         }
 
-        public async Task UpdateAsync(Guardian guardian)
+        public async Task UpdateAsync(UpdateGuardianDto updateGuardianDto)
         {
-            if (guardian is null)
+            if (updateGuardianDto is null)
             {
-                throw new ArgumentException("El acudiente no puede estar vacío.", nameof(guardian));
+                throw new ArgumentException("El encargado no puede estar vacío.", nameof(updateGuardianDto));
             }
 
-            if (guardian.PhoneNumbers == null || !guardian.PhoneNumbers.Any())
+            if (updateGuardianDto.PhoneNumbers == null || !updateGuardianDto.PhoneNumbers.Any())
             {
-                throw new ArgumentException("El acudiente debe tener al menos un número de teléfono.", nameof(guardian));
+                throw new ArgumentException("El encargado debe tener al menos un número de teléfono.", nameof(updateGuardianDto));
             }
 
-            foreach (PhoneNumber pNumber in guardian.PhoneNumbers)
+            foreach (PhoneNumberDto pNumber in updateGuardianDto.PhoneNumbers)
             {
                 if (!_phoneNumberValidator.ValidateNumber(pNumber.Number))
                 {
-                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(guardian));
+                    throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(updateGuardianDto));
                 }
             }
 
-            var existingGuardian = await _guardianRepository.GetByIdAsync(guardian.Id);
+            var existingGuardian = await _guardianRepository.GetByIdAsync(updateGuardianDto.Id);
             if (existingGuardian is null)
             {
                 throw new KeyNotFoundException("No se encontró el acudiente que se desea actualizar.");
             }
 
-            await _guardianRepository.UpdateAsync(guardian);
+            _mapper.Map(updateGuardianDto, existingGuardian);
+            await _guardianRepository.UpdateAsync(existingGuardian);
         }
 
         public async Task DeactivateAsync(Guid id)

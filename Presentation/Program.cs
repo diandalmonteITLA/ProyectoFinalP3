@@ -1,25 +1,32 @@
 using App.Core.Application.Mappings;
+using App.Infrastructure.Persistence;
+using App.Infrastructure.Identity;
+using AutoMapper;
+using App.Core.Application.Interfaces;
+using App.Core.Application.Services;
+using App.Core.Application;
+
 namespace Presentation
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddRazorPages();
-            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            builder.Services.AddAutoMapper(cfg => cfg.AddProfile<GradeMappingProfile>());
+            builder.Services.AddApplicationLayerIoc();
+            builder.Services.AddIdentityLayerIoc(builder.Configuration);
+            builder.Services.AddPersistenceLayerIoc(builder.Configuration);
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            await app.Services.RunIdentitySeedAsync();
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -27,6 +34,7 @@ namespace Presentation
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -34,7 +42,7 @@ namespace Presentation
             app.MapRazorPages()
                .WithStaticAssets();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

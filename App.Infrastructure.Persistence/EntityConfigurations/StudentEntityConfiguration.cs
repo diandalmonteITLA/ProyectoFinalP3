@@ -16,7 +16,6 @@ namespace App.Infrastructure.Persistence.EntityConfigurations
             //Property Configurations
             builder.Property(s => s.Name).IsRequired().HasMaxLength(100);
             builder.Property(s => s.LastName).IsRequired().HasMaxLength(100);
-            builder.Property(s => s.Email).IsRequired().HasMaxLength(254);
 
             //Relationships
             builder.HasMany(s => s.Guardian)      
@@ -29,12 +28,6 @@ namespace App.Infrastructure.Persistence.EntityConfigurations
                     j.Property("GuardianId").HasColumnName("GuardianId");
                     j.Property("StudentId").HasColumnName("StudentId");
                 });
-
-            builder.OwnsOne(s => s.PhoneNumber, phone =>
-            {
-                phone.Property(p => p.Number).HasMaxLength(20);
-                phone.Property(p => p.Type).HasConversion<string>();
-            });
 
             builder.HasOne(s => s.Grade)
                 .WithMany(g => g.Students)

@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using App.Core.Application.DTOs.Students;
 using App.Core.Application.Interfaces;
 using App.Core.Domain.Entities;
 using App.Core.Domain.Interfaces;
+using AutoMapper;
 
 namespace App.Core.Application.Services
 {
@@ -12,38 +14,45 @@ namespace App.Core.Application.Services
         private readonly IGenericRepository<Student> _studentRepository;
         private readonly IAuditService _auditService;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
+        private readonly IMapper _mapper;
 
         public StudentService(
             IGenericRepository<Student> studentRepository,
             IAuditService auditService,
-            IPhoneNumberValidator phoneNumberValidator)
+            IPhoneNumberValidator phoneNumberValidator,
+            IMapper mapper)
         {
             _studentRepository = studentRepository ?? throw new ArgumentNullException(nameof(studentRepository));
             _auditService = auditService ?? throw new ArgumentNullException(nameof(auditService));
             _phoneNumberValidator = phoneNumberValidator ?? throw new ArgumentNullException(nameof(phoneNumberValidator));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<Student?> GetByIdAsync(Guid id)
+        public async Task<StudentDto?> GetByIdAsync(Guid id)
         {
-            return await _studentRepository.GetByIdAsync(id);
+            var student = await _studentRepository.GetByIdAsync(id);
+            return student != null ? _mapper.Map<StudentDto>(student) : null;
         }
 
-        public async Task<IReadOnlyCollection<Student>> GetAllAsync(bool includeInactive = false)
+        public async Task<IReadOnlyCollection<StudentDto>> GetAllAsync(bool includeInactive = false)
         {
-            return await _studentRepository.GetAllAsync(includeInactive);
+            var students = await _studentRepository.GetAllAsync(includeInactive);
+            return _mapper.Map<IReadOnlyCollection<StudentDto>>(students);
         }
 
-        public async Task AddAsync(Student student)
+        public async Task AddAsync(CreateStudentDto createStudentDto)
         {
-            if (student is null)
+            if (createStudentDto is null)
             {
-                throw new ArgumentException("El estudiante no puede estar vacío.", nameof(student));
+                throw new ArgumentException("El estudiante no puede estar vacío.", nameof(createStudentDto));
             }
+
+            var student = _mapper.Map<Student>(createStudentDto);
 
             if (student.PhoneNumber is not null &&
                 !_phoneNumberValidator.ValidateNumber(student.PhoneNumber.Number))
             {
-                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(student));
+                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(createStudentDto));
             }
 
             await _studentRepository.AddAsync(student);
@@ -54,32 +63,34 @@ namespace App.Core.Application.Services
                 $"Se creó el estudiante {student.Name} {student.LastName}");
         }
 
-        public async Task UpdateAsync(Student student)
+        public async Task UpdateAsync(UpdateStudentDto updateStudentDto)
         {
-            if (student is null)
+            if (updateStudentDto is null)
             {
-                throw new ArgumentException("El estudiante no puede estar vacío.", nameof(student));
+                throw new ArgumentException("El estudiante no puede estar vacío.", nameof(updateStudentDto));
             }
 
-            if (student.PhoneNumber is not null &&
-                !_phoneNumberValidator.ValidateNumber(student.PhoneNumber.Number))
-            {
-                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(student));
-            }
-
-            var existingStudent = await _studentRepository.GetByIdAsync(student.Id);
+            var existingStudent = await _studentRepository.GetByIdAsync(updateStudentDto.Id);
 
             if (existingStudent is null)
             {
                 throw new KeyNotFoundException("No se encontró el estudiante que se desea actualizar.");
             }
 
-            await _studentRepository.UpdateAsync(student);
+            _mapper.Map(updateStudentDto, existingStudent);
+
+            if (existingStudent.PhoneNumber is not null &&
+                !_phoneNumberValidator.ValidateNumber(existingStudent.PhoneNumber.Number))
+            {
+                throw new ArgumentException("El formato del número de teléfono no es válido.", nameof(updateStudentDto));
+            }
+
+            await _studentRepository.UpdateAsync(existingStudent);
 
             await _auditService.RegisterAsync(
                 "Student",
                 "UPDATE",
-                $"Se actualizó el estudiante {student.Name} {student.LastName}");
+                $"Se actualizó el estudiante {existingStudent.Name} {existingStudent.LastName}");
         }
 
         public async Task DeactivateAsync(Guid id)

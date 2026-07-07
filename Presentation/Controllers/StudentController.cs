@@ -1,61 +1,142 @@
-using App.Core.Application.DTOS.Students;
+using App.Core.Application.DTOs.Students;
+using App.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Presentation.Controllers
+namespace App.Presentation.Web.Controllers
 {
-    [Authorize(Roles = "Coordinador")]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class StudentController : ControllerBase
+    [Authorize(Roles = "Coordinator")]
+    public class StudentController : Controller
     {
-        // GET: api/Student
+        private readonly IStudentService _studentService;
+
+        public StudentController(IStudentService studentService)
+        {
+            _studentService = studentService;
+        }
+
         [HttpGet]
-        public ActionResult<IEnumerable<StudentDto>> GetAll()
+        public async Task<IActionResult> Index()
         {
-            // TODO: Implement logic to retrieve all students
-            return Ok(new List<StudentDto>());
+            var students = await _studentService.GetAllAsync(includeInactive: false);
+            return View(students);
         }
 
-        // GET: api/Student/{id}
-        [HttpGet("{id}")]
-        public ActionResult<StudentDto> GetById(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
         {
-            // TODO: Implement logic to retrieve a student by ID
-            return Ok(new StudentDto { Name = "", LastName = "" });
+            var student = await _studentService.GetByIdAsync(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return View(student);
         }
 
-        // POST: api/Student
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         [HttpPost]
-        public ActionResult<StudentDto> Create([FromBody] CreateStudentDto createStudentDto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateStudentDto createStudentDto)
         {
-            // TODO: Implement logic to create a new student
-            var newStudent = new StudentDto { Name = createStudentDto.Name, LastName = createStudentDto.LastName };
-            return CreatedAtAction(nameof(GetById), new { id = Guid.NewGuid() }, newStudent);
+            if (!ModelState.IsValid)
+            {
+                return View(createStudentDto);
+            }
+
+            try
+            {
+                await _studentService.AddAsync(createStudentDto);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(createStudentDto);
+            }
         }
 
-        // PUT: api/Student/{id}
-        [HttpPut("{id}")]
-        public ActionResult<StudentDto> Update(Guid id, [FromBody] UpdateStudentDto updateStudentDto)
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
         {
-            // TODO: Implement logic to update a student
-            return Ok(new StudentDto { Name = updateStudentDto.Name, LastName = updateStudentDto.LastName });
+            var student = await _studentService.GetByIdAsync(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            var updateDto = new UpdateStudentDto
+            {
+                Id = student.Id,
+                Name = student.Name,
+                LastName = student.LastName,
+                GradeId = student.GradeId,
+                GuardianIds = student.Guardians.Select(g => g.Id).ToList()
+            };
+
+            return View(updateDto);
         }
 
-        // PATCH: api/Student/{id}
-        [HttpPatch("{id}")]
-        public ActionResult<StudentDto> PartialUpdate(Guid id, [FromBody] UpdateStudentDto updateStudentDto)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Guid id, UpdateStudentDto updateStudentDto)
         {
-            // TODO: Implement logic to partially update a student
-            return Ok(new StudentDto { Name = updateStudentDto.Name, LastName = updateStudentDto.LastName });
+            if (id != updateStudentDto.Id)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(updateStudentDto);
+            }
+
+            try
+            {
+                await _studentService.UpdateAsync(updateStudentDto);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(updateStudentDto);
+            }
         }
 
-        // DELETE: api/Student/{id}
-        [HttpDelete("{id}")]
-        public ActionResult Delete(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            // TODO: Implement logic to delete a student
-            return NoContent();
+            var student = await _studentService.GetByIdAsync(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return View(student);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            try
+            {
+                await _studentService.DeactivateAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                var student = await _studentService.GetByIdAsync(id);
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(student);
+            }
         }
     }
 }

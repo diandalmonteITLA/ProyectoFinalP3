@@ -1,8 +1,8 @@
-﻿using App.Core.Application.DTOs;
+﻿using App.Core.Application.DTOs.Grades;
 using App.Core.Domain.Entities;
 using AutoMapper;
 
-namespace App.Core.Application.Mappings
+namespace App.Core.Application.Mappings.EntitiesAndDtos
 {
     public class GradeMappingProfile : Profile
     {
