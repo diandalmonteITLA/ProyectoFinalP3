@@ -46,14 +46,12 @@
             overflow: hidden;
         }
 
-        /* Dashboard Container */
         .dashboard-container {
             display: flex;
             width: 100%;
             height: 100vh;
         }
 
-        /* Sidebar Navigation */
         .sidebar {
             width: 260px;
             background-color: var(--color-sidebar-bg);
@@ -127,7 +125,6 @@
             font-weight: 700;
         }
 
-        /* Main Workspace Content */
         .main-workspace {
             flex: 1;
             display: flex;
@@ -136,7 +133,6 @@
             padding: 30px;
         }
 
-        /* Academic Header Banner */
         .academic-banner {
             width: 100%;
             height: 160px;
@@ -205,7 +201,6 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Floating User Profile inside Banner */
         .user-floating-profile {
             position: relative;
             z-index: 2;
@@ -265,7 +260,6 @@
             color: #EF4444;
         }
 
-        /* Filter Controls & Search */
         .workspace-controls {
             display: flex;
             align-items: center;
@@ -331,7 +325,6 @@
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
         }
 
-        /* Data Table Card */
         .table-card {
             background-color: #ffffff;
             border: 1px solid var(--color-border);
@@ -374,7 +367,6 @@
             background-color: #FCFDFE;
         }
 
-        /* Teacher Profile Cell */
         .profile-cell {
             display: flex;
             align-items: center;
@@ -402,7 +394,6 @@
             font-size: 13px;
         }
 
-        /* Action Buttons */
         .action-group {
             display: flex;
             align-items: center;
@@ -437,7 +428,6 @@
             fill: none;
         }
 
-        /* Sliding Drawer Form */
         .drawer-backdrop {
             position: fixed;
             top: 0;
@@ -567,7 +557,6 @@
             background-color: #1e293b;
         }
 
-        /* Notification Toast */
         .toast-notification {
             background-color: #ffffff;
             border-left: 4px solid var(--color-accent);
@@ -598,7 +587,6 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-emblem"></div>
@@ -632,9 +620,7 @@
             </ul>
         </aside>
 
-        <!-- Main Workspace -->
         <main class="main-workspace">
-            <!-- Academic Header Banner -->
             <section class="academic-banner">
                 <div class="banner-content">
                     <div class="banner-accent-bar"></div>
@@ -655,7 +641,6 @@
                 </div>
             </section>
 
-            <!-- Notifications -->
             @if (!string.IsNullOrEmpty(Model.ActionSuccess))
             {
                 <div class="toast-notification toast-success">
@@ -671,7 +656,6 @@
                 </div>
             }
 
-            <!-- Table Filters & CTA -->
             <section class="workspace-controls">
                 <form method="get" class="search-container">
                     <input asp-for="SearchTerm" class="table-search-input" placeholder="🔍  Buscar profesor..." />
@@ -696,7 +680,6 @@
                 </button>
             </section>
 
-            <!-- Data Table Card -->
             <section class="table-card">
                 <table class="teachers-table">
                     <thead>
@@ -734,13 +717,11 @@
                                     <td>@teacher.Phone</td>
                                     <td>
                                         <div class="action-group">
-                                            <!-- Edit button -->
                                             <button class="btn-action-icon" title="Editar" 
                                                     onclick="openEditDrawer('@teacher.Id', '@teacher.Name', '@teacher.LastName', '@teacher.Email', '@teacher.Phone', 'Mobile', '@teacher.Specialty', '', '')">
                                                 <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                             </button>
 
-                                            <!-- Delete button -->
                                             <form method="post" asp-page-handler="Delete" style="display:inline;" onsubmit="return confirm('¿Está seguro de que desea eliminar a este docente?')">
                                                 <input type="hidden" name="id" value="@teacher.Id" />
                                                 <button type="submit" class="btn-action-icon btn-delete" title="Eliminar/Desactivar">
@@ -758,16 +739,13 @@
         </main>
     </div>
 
-    <!-- SLIDING DRAWER BACKDROP -->
     <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
 
-    <!-- SLIDING DRAWER PANEL -->
     <div class="drawer-form-panel" id="drawerPanel">
         <div class="drawer-header">
             <h2 class="drawer-title" id="drawerTitle">Registrar Nuevo Docente</h2>
         </div>
         
-        <!-- Action Form -->
         <form method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">
             <input type="hidden" asp-for="EditingTeacher.Id" id="field-id" />
             
@@ -818,13 +796,11 @@
                     </select>
                 </div>
 
-                <!-- Create-only password block -->
                 <div class="drawer-field-group" id="password-field-block">
                     <label class="drawer-label">Contraseña Temporal</label>
                     <input asp-for="NewTeacher.Password" class="drawer-input" type="password" id="field-password" placeholder="••••••••" required />
                 </div>
 
-                <!-- Edit-only status block -->
                 <div class="drawer-field-group" id="status-field-block" style="display: none;">
                     <label class="drawer-label">Estado</label>
                     <select asp-for="EditingTeacher.Status" class="drawer-input" id="field-status" style="padding: 0 12px;">
@@ -853,7 +829,6 @@
         const pwdInput = document.getElementById('field-password');
         const statusBlock = document.getElementById('status-field-block');
 
-        // Fields
         const idInput = document.getElementById('field-id');
         const nameInput = document.getElementById('field-name');
         const lastnameInput = document.getElementById('field-lastname');
@@ -865,12 +840,10 @@
         const statusInput = document.getElementById('field-status');
 
         function openCreateDrawer() {
-            // Setup Create Form
             titleEl.textContent = 'Registrar Nuevo Docente';
             submitBtn.textContent = 'Guardar Docente';
             formEl.setAttribute('action', '/Index?handler=Create');
             
-            // Clear inputs
             idInput.value = '';
             nameInput.value = '';
             lastnameInput.value = '';
@@ -880,7 +853,6 @@
             specialtyInput.value = '';
             deptInput.value = 'Ciencias Básicas';
             
-            // Re-name fields for model binding to NewTeacher
             nameInput.setAttribute('name', 'NewTeacher.Name');
             lastnameInput.setAttribute('name', 'NewTeacher.LastName');
             emailInput.setAttribute('name', 'NewTeacher.Email');
@@ -889,23 +861,19 @@
             specialtyInput.setAttribute('name', 'NewTeacher.Specialty');
             deptInput.setAttribute('name', 'NewTeacher.Department');
             
-            // Show password block, hide status block
             pwdBlock.style.display = 'flex';
             pwdInput.setAttribute('required', 'required');
             statusBlock.style.display = 'none';
 
-            // Toggle classes
             backdrop.classList.add('open');
             panel.classList.add('open');
         }
 
         function openEditDrawer(id, name, lastname, email, phone, phonetype, specialty, department, status) {
-            // Setup Edit Form
             titleEl.textContent = 'Modificar Docente';
             submitBtn.textContent = 'Guardar Cambios';
             formEl.setAttribute('action', '/Index?handler=Edit');
             
-            // Fill inputs
             idInput.value = id;
             nameInput.value = name;
             lastnameInput.value = lastname;
@@ -916,7 +884,6 @@
             deptInput.value = department;
             statusInput.value = status;
             
-            // Rename fields for model binding to EditingTeacher
             nameInput.setAttribute('name', 'EditingTeacher.Name');
             lastnameInput.setAttribute('name', 'EditingTeacher.LastName');
             emailInput.setAttribute('name', 'EditingTeacher.Email');
@@ -925,12 +892,10 @@
             specialtyInput.setAttribute('name', 'EditingTeacher.Specialty');
             deptInput.setAttribute('name', 'EditingTeacher.Department');
             
-            // Hide password block, show status block
             pwdBlock.style.display = 'none';
             pwdInput.removeAttribute('required');
             statusBlock.style.display = 'flex';
 
-            // Toggle classes
             backdrop.classList.add('open');
             panel.classList.add('open');
         }

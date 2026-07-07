@@ -52,7 +52,6 @@ namespace Presentation.Pages
             var rawTeachers = await _teacherService.GetAllAsync(includeInactive: false);
             var filtered = rawTeachers.AsEnumerable();
 
-            // Search filter
             if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
                 var term = SearchTerm.Trim().ToLower();
@@ -61,7 +60,6 @@ namespace Presentation.Pages
                                               t.Email.ToLower().Contains(term));
             }
 
-            // Map to ViewModels with a deterministic mock specialty to match design requirements
             var mapped = filtered.Select((t, index) => new TeacherViewModel
             {
                 Id = t.Id,
@@ -69,10 +67,9 @@ namespace Presentation.Pages
                 LastName = t.LastName,
                 Email = t.Email,
                 Phone = t.PhoneNumbers != null && t.PhoneNumbers.Any() ? t.PhoneNumbers.First().Number : "",
-                Specialty = Specialties[(index % (Specialties.Count - 1)) + 1] // Assign a mock specialty from the list
+                Specialty = Specialties[(index % (Specialties.Count - 1)) + 1] 
             });
 
-            // Specialty filter
             if (!string.IsNullOrWhiteSpace(SelectedSpecialty) && SelectedSpecialty != "Todas")
             {
                 mapped = mapped.Where(t => t.Specialty == SelectedSpecialty);

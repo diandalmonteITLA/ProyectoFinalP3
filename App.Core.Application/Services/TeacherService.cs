@@ -1,4 +1,4 @@
-﻿using App.Core.Application.DTOs.Teacher;
+using App.Core.Application.DTOs.Teacher;
 using App.Core.Application.Interfaces;
 using App.Core.Domain.Entities;
 using App.Core.Domain.Interfaces;
@@ -18,9 +18,8 @@ namespace App.Core.Application.Services
 
         public TeacherService(IGenericRepository<Teacher> teacherRepository, IMapper mapper)
         {
-            _teacherRepository = teacherRepository;
-            _mapper = mapper;
-            throw new ArgumentNullException(nameof(teacherRepository));
+            _teacherRepository = teacherRepository ?? throw new ArgumentNullException(nameof(teacherRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<TeacherDto?> GetByIdAsync(Guid id)

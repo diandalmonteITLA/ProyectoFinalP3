@@ -12,12 +12,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Sistema Académico</title>
     
-    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap CSS for grid / forms -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 
     <style>
@@ -559,7 +557,6 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-emblem"></div>
@@ -593,9 +590,7 @@
             </ul>
         </aside>
 
-        <!-- Main Workspace Content -->
         <main class="main-workspace">
-            <!-- Academic Header Banner -->
             <section class="academic-banner">
                 <div class="banner-content">
                     <div class="banner-accent-bar"></div>
@@ -616,7 +611,6 @@
                 </div>
             </section>
 
-            <!-- Alerts -->
             @if (!string.IsNullOrEmpty(Model.ActionSuccess))
             {
                 <div class="alert-success">@Model.ActionSuccess</div>
@@ -626,7 +620,6 @@
                 <div class="alert-danger">@Model.ActionError</div>
             }
 
-            <!-- Table Filters & CTA -->
             <section class="workspace-controls">
                 <form method="get" class="search-container">
                     <input type="text" name="SearchTerm" value="@Model.SearchTerm" class="table-search-input" placeholder="🔍  Buscar acudiente..." />
@@ -637,7 +630,6 @@
                 </button>
             </section>
 
-            <!-- Data Table Card -->
             <section class="table-card">
                 <table class="teachers-table">
                     <thead>
@@ -688,10 +680,8 @@
         </main>
     </div>
 
-    <!-- REGISTRATION SLIDING DRAWER PANEL -->
     <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeAllDrawers()"></div>
     
-    <!-- ADD DRAWER -->
     <div class="drawer-form-panel" id="addDrawerPanel">
         <div class="drawer-header">
             <h2 class="drawer-title">Registrar Nuevo Acudiente</h2>
@@ -724,7 +714,6 @@
         </form>
     </div>
 
-    <!-- EDIT DRAWER -->
     <div class="drawer-form-panel" id="editDrawerPanel">
         <div class="drawer-header">
             <h2 class="drawer-title">Modificar Acudiente</h2>
@@ -758,7 +747,6 @@
         </form>
     </div>
 
-    <!-- Hidden form for Deletion POST -->
     <form method="post" asp-page-handler="Delete" id="deleteForm" style="display:none;">
         <input type="hidden" asp-for="DeletingGuardianId" id="field-delete-id" />
     </form>

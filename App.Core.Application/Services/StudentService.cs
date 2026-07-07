@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using App.Core.Application.DTOs.Students;
@@ -59,8 +59,8 @@ namespace App.Core.Application.Services
                 throw new KeyNotFoundException("No se encontró el estudiante que se desea actualizar.");
             }
 
-            var student = _mapper.Map<Student>(updateStudentDto);
-            await _studentRepository.UpdateAsync(student);
+            _mapper.Map(updateStudentDto, existingStudent);
+            await _studentRepository.UpdateAsync(existingStudent);
         }
 
         public async Task DeactivateAsync(Guid id)

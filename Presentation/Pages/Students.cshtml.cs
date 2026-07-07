@@ -1,7 +1,6 @@
 using App.Core.Application.Interfaces;
 using App.Core.Application.ViewModels;
-using App.Core.Domain.Entities;
-using App.Core.Domain.Interfaces;
+using App.Core.Application.DTOs.Students;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,16 +15,16 @@ namespace Presentation.Pages
     public class StudentsModel : PageModel
     {
         private readonly IStudentService _studentService;
-        private readonly IGenericRepository<Grade> _gradeRepository;
+        private readonly IGradeService _gradeService;
         private readonly IGuardianService _guardianService;
 
         public StudentsModel(
             IStudentService studentService, 
-            IGenericRepository<Grade> gradeRepository,
+            IGradeService gradeService,
             IGuardianService guardianService)
         {
             _studentService = studentService;
-            _gradeRepository = gradeRepository;
+            _gradeService = gradeService;
             _guardianService = guardianService;
         }
 
@@ -51,7 +50,6 @@ namespace Presentation.Pages
         [BindProperty]
         public string Matricula { get; set; } = string.Empty;
 
-        // Guardian fields for student creation/linking (optional or hidden fallback)
         [BindProperty]
         public string GuardianName { get; set; } = string.Empty;
 
@@ -67,7 +65,6 @@ namespace Presentation.Pages
         [BindProperty]
         public Guid? SelectedExistingGuardianId { get; set; }
 
-        // General Guardian Link / Delete fields (used from modal popup)
         [BindProperty]
         public Guid GuardianStudentId { get; set; }
 
@@ -87,13 +84,13 @@ namespace Presentation.Pages
 
         private async Task LoadDataAsync()
         {
-            var rawGrades = await _gradeRepository.GetAllAsync(includeInactive: false);
+            var rawGrades = await _gradeService.GetAllAsync();
             Grades = rawGrades.Select(g => new GradeViewModel
             {
                 Id = g.Id,
                 Name = g.Name,
                 TeacherId = g.TeacherId,
-                TeacherName = g.TeacherInCharge != null ? $"{g.TeacherInCharge.Name} {g.TeacherInCharge.LastName}" : "Sin Asignar"
+                TeacherName = g.TeacherName ?? "Sin Asignar"
             }).OrderBy(g => g.Name).ToList();
 
             var rawGuardians = await _guardianService.GetAllAsync(includeInactive: false);
@@ -109,7 +106,6 @@ namespace Presentation.Pages
             var allStudents = await _studentService.GetAllAsync(includeInactive: false);
             var filtered = allStudents.AsEnumerable();
 
-            // Search Filter
             if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
                 var term = SearchTerm.Trim().ToLower();
@@ -117,7 +113,6 @@ namespace Presentation.Pages
                                               s.LastName.ToLower().Contains(term));
             }
 
-            // Grade Filter
             if (SelectedGradeId.HasValue && SelectedGradeId.Value != Guid.Empty)
             {
                 filtered = filtered.Where(s => s.GradeId == SelectedGradeId.Value);
@@ -129,15 +124,15 @@ namespace Presentation.Pages
                 Name = s.Name,
                 LastName = s.LastName,
                 GradeId = s.GradeId,
-                GradeName = s.Grade?.Name ?? "Sin Asignar",
-                Guardians = s.Guardian?.Select(g => new GuardianViewModel
+                GradeName = s.GradeName ?? "Sin Asignar",
+                Guardians = s.Guardians.Select(g => new GuardianViewModel
                 {
                     Id = g.Id,
                     Name = g.Name,
                     LastName = g.LastName,
                     Email = g.Email,
-                    Phone = g.PhoneNumbers != null && g.PhoneNumbers.Any() ? g.PhoneNumbers.First().Number : ""
-                }).ToList() ?? new List<GuardianViewModel>()
+                    Phone = ""
+                }).ToList()
             }).OrderBy(s => s.Name).ToList();
         }
 
@@ -152,7 +147,6 @@ namespace Presentation.Pages
                 return Page();
             }
 
-            // Validate that we have a guardian
             bool hasExistingGuardian = SelectedExistingGuardianId.HasValue && SelectedExistingGuardianId.Value != Guid.Empty;
 
             if (!hasExistingGuardian)
@@ -164,24 +158,16 @@ namespace Presentation.Pages
 
             try
             {
-                var studentEntity = new Student
+                var dto = new CreateStudentDto
                 {
-                    Id = Guid.NewGuid(),
                     Name = NewStudent.Name,
                     LastName = NewStudent.LastName,
                     GradeId = NewStudent.GradeId,
-                    IsActive = true,
-                    Guardian = new List<Guardian>()
+                    GuardianIds = new List<Guid> { SelectedExistingGuardianId!.Value }
                 };
 
-                var existing = await _guardianService.GetByIdAsync(SelectedExistingGuardianId!.Value);
-                if (existing != null)
-                {
-                    studentEntity.Guardian.Add(existing);
-                }
-
-                await _studentService.AddAsync(studentEntity);
-                ActionSuccess = $"El estudiante {studentEntity.Name} {studentEntity.LastName} fue registrado correctamente.";
+                await _studentService.AddAsync(dto);
+                ActionSuccess = $"El estudiante {dto.Name} {dto.LastName} fue registrado correctamente.";
                 return RedirectToPage(new { SearchTerm, SelectedGradeId });
             }
             catch (Exception ex)
@@ -206,12 +192,17 @@ namespace Presentation.Pages
                     return Page();
                 }
 
-                existing.Name = EditingStudent.Name;
-                existing.LastName = EditingStudent.LastName;
-                existing.GradeId = EditingStudent.GradeId;
+                var dto = new UpdateStudentDto
+                {
+                    Id = EditingStudent.Id,
+                    Name = EditingStudent.Name,
+                    LastName = EditingStudent.LastName,
+                    GradeId = EditingStudent.GradeId,
+                    GuardianIds = existing.Guardians.Select(g => g.Id).ToList()
+                };
 
-                await _studentService.UpdateAsync(existing);
-                ActionSuccess = $"El estudiante {existing.Name} {existing.LastName} fue modificado correctamente.";
+                await _studentService.UpdateAsync(dto);
+                ActionSuccess = $"El estudiante {dto.Name} {dto.LastName} fue modificado correctamente.";
                 return RedirectToPage(new { SearchTerm, SelectedGradeId });
             }
             catch (Exception ex)
@@ -237,7 +228,6 @@ namespace Presentation.Pages
             return RedirectToPage(new { SearchTerm, SelectedGradeId });
         }
 
-        // Link Guardian via Modal Popup
         public async Task<IActionResult> OnPostAddGuardianAsync()
         {
             ModelState.Clear();
@@ -259,21 +249,22 @@ namespace Presentation.Pages
                     return Page();
                 }
 
-                if (student.Guardian == null)
-                {
-                    student.Guardian = new List<Guardian>();
-                }
+                var guardianIds = student.Guardians.Select(g => g.Id).ToList();
 
                 if (SelectedExistingGuardianId.HasValue && SelectedExistingGuardianId.Value != Guid.Empty)
                 {
-                    var existing = await _guardianService.GetByIdAsync(SelectedExistingGuardianId.Value);
-                    if (existing != null)
+                    if (!guardianIds.Contains(SelectedExistingGuardianId.Value))
                     {
-                        if (!student.Guardian.Any(g => g.Id == existing.Id))
+                        guardianIds.Add(SelectedExistingGuardianId.Value);
+                        var updateDto = new UpdateStudentDto
                         {
-                            student.Guardian.Add(existing);
-                            await _studentService.UpdateAsync(student);
-                        }
+                            Id = student.Id,
+                            Name = student.Name,
+                            LastName = student.LastName,
+                            GradeId = student.GradeId,
+                            GuardianIds = guardianIds
+                        };
+                        await _studentService.UpdateAsync(updateDto);
                     }
                 }
 
@@ -288,7 +279,6 @@ namespace Presentation.Pages
             }
         }
 
-        // Delete/Unlink Guardian
         public async Task<IActionResult> OnPostDeleteGuardianAsync()
         {
             if (GuardianStudentId == Guid.Empty || DeletingGuardianId == Guid.Empty)
@@ -300,13 +290,21 @@ namespace Presentation.Pages
             try
             {
                 var student = await _studentService.GetByIdAsync(GuardianStudentId);
-                if (student != null && student.Guardian != null)
+                if (student != null)
                 {
-                    var target = student.Guardian.FirstOrDefault(g => g.Id == DeletingGuardianId);
-                    if (target != null)
+                    var guardianIds = student.Guardians.Select(g => g.Id).ToList();
+                    if (guardianIds.Contains(DeletingGuardianId))
                     {
-                        student.Guardian.Remove(target);
-                        await _studentService.UpdateAsync(student);
+                        guardianIds.Remove(DeletingGuardianId);
+                        var updateDto = new UpdateStudentDto
+                        {
+                            Id = student.Id,
+                            Name = student.Name,
+                            LastName = student.LastName,
+                            GradeId = student.GradeId,
+                            GuardianIds = guardianIds
+                        };
+                        await _studentService.UpdateAsync(updateDto);
                         ActionSuccess = "El acudiente fue desvinculado correctamente del estudiante.";
                     }
                 }

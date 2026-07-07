@@ -1,4 +1,4 @@
-﻿using App.Infrastructure.Persistence.Contexts;
+using App.Infrastructure.Persistence.Contexts;
 using App.Infrastructure.Persistence.Repositories;
 using App.Core.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +32,7 @@ namespace App.Infrastructure.Persistence
 
             }
 
-            services.AddScoped(typeof(IGenericRepository<>), typeof(IGenericRepository<>));
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IGradeRepository, GradeRepository>();
         }
 

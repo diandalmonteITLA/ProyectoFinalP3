@@ -14,12 +14,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Instituto tal</title>
     
-    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap CSS for grid / forms -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <style>
@@ -50,14 +48,12 @@
             overflow: hidden;
         }
 
-        /* Dashboard Container */
         .dashboard-container {
             display: flex;
             width: 100%;
             height: 100vh;
         }
 
-        /* Sidebar Navigation */
         .sidebar {
             width: 260px;
             background-color: var(--color-sidebar-bg);
@@ -131,7 +127,6 @@
             font-weight: 700;
         }
 
-        /* Main Workspace Content */
         .main-workspace {
             flex: 1;
             display: flex;
@@ -140,7 +135,6 @@
             padding: 30px;
         }
 
-        /* Academic Header Banner */
         .academic-banner {
             width: 100%;
             height: 160px;
@@ -209,7 +203,6 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Floating User Profile inside Banner */
         .user-floating-profile {
             position: relative;
             z-index: 2;
@@ -269,7 +262,6 @@
             color: #EF4444;
         }
 
-        /* Filter Controls & Search */
         .workspace-controls {
             display: flex;
             align-items: center;
@@ -314,7 +306,6 @@
             justify-content: center;
         }
 
-        /* Card Grid Layout */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -322,7 +313,6 @@
             margin-bottom: 24px;
         }
 
-        /* Grade Card */
         .grade-card {
             background-color: var(--color-card-bg);
             border: 1px solid var(--color-border);
@@ -383,7 +373,6 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-emblem"></div>
@@ -417,9 +406,7 @@
             </ul>
         </aside>
 
-        <!-- Main Workspace -->
         <main class="main-workspace">
-            <!-- Academic Header Banner -->
             <section class="academic-banner">
                 <div class="banner-content">
                     <div class="banner-accent-bar"></div>
@@ -440,7 +427,6 @@
                 </div>
             </section>
 
-            <!-- Table Filters -->
             <section class="workspace-controls">
                 <form method="get" class="search-container">
                     <input asp-for="SearchTerm" class="table-search-input" placeholder="🔍  Buscar grados..." />
@@ -453,7 +439,6 @@
                 }
             </section>
 
-            <!-- Grades Cards Grid -->
             <section class="cards-grid">
                 @if (!Model.Grades.Any())
                 {

@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using App.Core.Application.Helpers;
 using App.Core.Application.Interfaces;
 using App.Core.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ namespace App.Core.Application
             services.AddScoped<IGradeService, GradeService>();
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<ITeacherService, TeacherService>();
+            services.AddTransient<IPhoneNumberValidator, PhoneNumberValidator>();
             #endregion
         }
 
