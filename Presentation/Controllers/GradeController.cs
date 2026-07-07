@@ -42,7 +42,6 @@ namespace App.Presentation.Web.Controllers
             if (grade == null)
                 return NotFound();
 
-            // Note: If your View uses UpdateGradeDto, you should map 'grade' to 'UpdateGradeDto' here before passing it to the view.
             return View(grade);
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -86,8 +86,8 @@ namespace App.Core.Application.Services
                 throw new KeyNotFoundException("No se encontró el acudiente que se desea actualizar.");
             }
 
-            var guardian = _mapper.Map<Guardian>(updateGuardianDto);
-            await _guardianRepository.UpdateAsync(guardian);
+            _mapper.Map(updateGuardianDto, existingGuardian);
+            await _guardianRepository.UpdateAsync(existingGuardian);
         }
 
         public async Task DeactivateAsync(Guid id)

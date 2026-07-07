@@ -1,40 +1,39 @@
-using App.Core.Application.DTOs.Students;
+using App.Core.Application.DTOs.Guardians;
 using App.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace App.Presentation.Web.Controllers
 {
     [Authorize(Roles = "Coordinator")]
-    public class StudentController : Controller
+    public class GuardianController : Controller
     {
-        private readonly IStudentService _studentService;
+        private readonly IGuardianService _guardianService;
 
-        public StudentController(IStudentService studentService)
+        public GuardianController(IGuardianService guardianService)
         {
-            _studentService = studentService;
+            _guardianService = guardianService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var students = await _studentService.GetAllAsync(includeInactive: false);
-            return View(students);
+            var guardians = await _guardianService.GetAllAsync(includeInactive: false);
+            return View(guardians);
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var student = await _studentService.GetByIdAsync(id);
-            if (student == null)
+            var guardian = await _guardianService.GetByIdAsync(id);
+            if (guardian == null)
             {
                 return NotFound();
             }
-            return View(student);
+            return View(guardian);
         }
 
         [HttpGet]
@@ -45,41 +44,41 @@ namespace App.Presentation.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateStudentDto createStudentDto)
+        public async Task<IActionResult> Create(CreateGuardianDto createGuardianDto)
         {
             if (!ModelState.IsValid)
             {
-                return View(createStudentDto);
+                return View(createGuardianDto);
             }
 
             try
             {
-                await _studentService.AddAsync(createStudentDto);
+                await _guardianService.AddAsync(createGuardianDto);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return View(createStudentDto);
+                return View(createGuardianDto);
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var student = await _studentService.GetByIdAsync(id);
-            if (student == null)
+            var guardian = await _guardianService.GetByIdAsync(id);
+            if (guardian == null)
             {
                 return NotFound();
             }
 
-            var updateDto = new UpdateStudentDto
+            var updateDto = new UpdateGuardianDto
             {
-                Id = student.Id,
-                Name = student.Name,
-                LastName = student.LastName,
-                GradeId = student.GradeId,
-                GuardianIds = student.Guardians.Select(g => g.Id).ToList()
+                Id = guardian.Id,
+                Name = guardian.Name,
+                LastName = guardian.LastName,
+                Email = guardian.Email,
+                PhoneNumbers = guardian.PhoneNumbers
             };
 
             return View(updateDto);
@@ -87,39 +86,39 @@ namespace App.Presentation.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, UpdateStudentDto updateStudentDto)
+        public async Task<IActionResult> Edit(Guid id, UpdateGuardianDto updateGuardianDto)
         {
-            if (id != updateStudentDto.Id)
+            if (id != updateGuardianDto.Id)
             {
                 return BadRequest();
             }
 
             if (!ModelState.IsValid)
             {
-                return View(updateStudentDto);
+                return View(updateGuardianDto);
             }
 
             try
             {
-                await _studentService.UpdateAsync(updateStudentDto);
+                await _guardianService.UpdateAsync(updateGuardianDto);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return View(updateStudentDto);
+                return View(updateGuardianDto);
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var student = await _studentService.GetByIdAsync(id);
-            if (student == null)
+            var guardian = await _guardianService.GetByIdAsync(id);
+            if (guardian == null)
             {
                 return NotFound();
             }
-            return View(student);
+            return View(guardian);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -128,14 +127,14 @@ namespace App.Presentation.Web.Controllers
         {
             try
             {
-                await _studentService.DeactivateAsync(id);
+                await _guardianService.DeactivateAsync(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                var student = await _studentService.GetByIdAsync(id);
+                var guardian = await _guardianService.GetByIdAsync(id);
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return View(student);
+                return View(guardian);
             }
         }
     }

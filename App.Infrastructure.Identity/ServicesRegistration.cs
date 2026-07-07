@@ -1,4 +1,4 @@
-﻿using App.Core.Application.Interfaces;
+using App.Core.Application.Interfaces;
 using App.Infrastructure.Identity.Context;
 using App.Infrastructure.Identity.Entities;
 using App.Infrastructure.Identity.Seeds;
@@ -57,6 +57,7 @@ namespace App.Infrastructure.Identity
             });
 
             services.AddScoped<IAccountService, AccountService>();
+            services.AddTransient<IEmailService, EmailService>();
         }
 
         public static async Task RunIdentitySeedAsync(this IServiceProvider service)

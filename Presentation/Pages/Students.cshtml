@@ -12,12 +12,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Instituto Tecnológico de Las Américas</title>
     
-    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Bootstrap CSS for grid / forms -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <style>
@@ -48,14 +46,12 @@
             overflow: hidden;
         }
 
-        /* Dashboard Container */
         .dashboard-container {
             display: flex;
             width: 100%;
             height: 100vh;
         }
 
-        /* Sidebar Navigation */
         .sidebar {
             width: 260px;
             background-color: var(--color-sidebar-bg);
@@ -129,7 +125,6 @@
             font-weight: 700;
         }
 
-        /* Main Workspace Content */
         .main-workspace {
             flex: 1;
             display: flex;
@@ -138,7 +133,6 @@
             padding: 30px;
         }
 
-        /* Academic Header Banner */
         .academic-banner {
             width: 100%;
             height: 160px;
@@ -207,7 +201,6 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Floating User Profile inside Banner */
         .user-floating-profile {
             position: relative;
             z-index: 2;
@@ -267,7 +260,6 @@
             color: #EF4444;
         }
 
-        /* Filter Controls & Search */
         .workspace-controls {
             display: flex;
             align-items: center;
@@ -333,7 +325,6 @@
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
         }
 
-        /* Card Grid Layout */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -341,7 +332,6 @@
             margin-bottom: 24px;
         }
 
-        /* Student Card */
         .student-card {
             background-color: var(--color-card-bg);
             border: 1px solid var(--color-border);
@@ -409,14 +399,12 @@
             font-weight: 500;
         }
 
-        /* Divider */
         .card-divider {
             height: 1px;
             background-color: var(--color-border);
             width: 100%;
         }
 
-        /* Student Footer */
         .student-footer {
             display: flex;
             align-items: center;
@@ -436,7 +424,6 @@
             margin-left: 4px;
         }
 
-        /* Action Buttons */
         .action-group {
             display: flex;
             align-items: center;
@@ -471,7 +458,6 @@
             fill: none;
         }
 
-        /* Data Table for Guardians in Modal */
         .teachers-table {
             width: 100%;
             border-collapse: collapse;
@@ -497,7 +483,6 @@
             vertical-align: middle;
         }
 
-        /* Sliding Drawer Form */
         .drawer-backdrop {
             position: fixed;
             top: 0;
@@ -627,7 +612,6 @@
             background-color: #1e293b;
         }
 
-        /* Notification Toast */
         .toast-notification {
             background-color: #ffffff;
             border-left: 4px solid var(--color-accent);
@@ -655,7 +639,6 @@
             font-weight: 500;
         }
 
-        /* Custom Guardians Modal Styling */
         .guardians-modal-card {
             position: fixed;
             top: 50%;
@@ -682,7 +665,6 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-emblem"></div>
@@ -716,9 +698,7 @@
             </ul>
         </aside>
 
-        <!-- Main Workspace -->
         <main class="main-workspace">
-            <!-- Academic Header Banner -->
             <section class="academic-banner">
                 <div class="banner-content">
                     <div class="banner-accent-bar"></div>
@@ -739,23 +719,21 @@
                 </div>
             </section>
 
-            <!-- Notifications -->
             @if (!string.IsNullOrEmpty(Model.ActionSuccess))
             {
                 <div class="toast-notification toast-success">
-                    <span class="toast-message">🎉 @Model.ActionSuccess</span>
+                    <span class="toast-message"> @Model.ActionSuccess</span>
                     <button type="button" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);" onclick="this.parentElement.remove()">✕</button>
                 </div>
             }
             @if (!string.IsNullOrEmpty(Model.ActionError))
             {
                 <div class="toast-notification toast-error">
-                    <span class="toast-message">⚠️ @Model.ActionError</span>
+                    <span class="toast-message"> @Model.ActionError</span>
                     <button type="button" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);" onclick="this.parentElement.remove()">✕</button>
                 </div>
             }
 
-            <!-- Table Filters & CTA -->
             <section class="workspace-controls">
                 <form method="get" class="search-container">
                     <input asp-for="SearchTerm" class="table-search-input" placeholder="🔍  Buscar estudiante..." />
@@ -780,7 +758,6 @@
                 </button>
             </section>
 
-            <!-- Student Cards Grid -->
             <section class="cards-grid">
                 @if (!Model.Students.Any())
                 {
@@ -795,7 +772,6 @@
                         var initials = (student.Name.Length > 0 ? student.Name[0].ToString() : "") + (student.LastName.Length > 0 ? student.LastName[0].ToString() : "");
                         var studentCode = StudentsModel.GetStudentCode(student.Id);
                         
-                        // Serialize guardians avoiding circular references
                         var guardiansData = System.Text.Json.JsonSerializer.Serialize(student.Guardians.Select(g => new {
                             id = g.Id,
                             name = g.FullName,
@@ -823,7 +799,6 @@
                                     Grado Escolar: <span class="student-grade-value">@student.GradeName</span>
                                 </div>
                                 <div class="action-group">
-                                    <!-- View Guardians icon -->
                                     <button class="btn-action-icon btn-view-guardians" title="Ver Acudientes"
                                             data-id="@student.Id"
                                             data-name="@student.Name"
@@ -835,13 +810,11 @@
                                         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                                     </button>
 
-                                    <!-- Edit icon -->
                                     <button class="btn-action-icon" title="Editar" 
                                             onclick="openEditDrawer('@student.Id', '@student.Name', '@student.LastName', '', '', '', '@student.GradeId', '@studentCode')">
                                         <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                     </button>
 
-                                    <!-- Delete icon -->
                                     <form method="post" asp-page-handler="Delete" style="display:inline;" onsubmit="return confirm('¿Está seguro de que desea eliminar a este estudiante?')">
                                         <input type="hidden" name="id" value="@student.Id" />
                                         <button type="submit" class="btn-action-icon btn-delete" title="Eliminar">
@@ -857,7 +830,6 @@
         </main>
     </div>
 
-    <!-- ACUDIENTES MODAL OVERLAY -->
     <div class="drawer-backdrop" id="guardiansBackdrop" onclick="closeGuardiansModal()"></div>
     <div id="guardiansModal" class="guardians-modal-card">
         <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
@@ -882,12 +854,10 @@
                 </tr>
             </thead>
             <tbody id="guardians-table-body">
-                <!-- Populated dynamically via JS -->
             </tbody>
         </table>
     </div>
 
-    <!-- STUDENT REGISTRATION DRAWER PANEL (STEP-BY-STEP FLOW) -->
     <div class="drawer-form-panel" id="drawerPanel">
         <div class="drawer-header">
             <h2 class="drawer-title" id="drawerTitle">Registrar Nuevo Estudiante</h2>
@@ -897,7 +867,6 @@
             <input type="hidden" asp-for="EditingStudent.Id" id="field-id" />
             <input type="hidden" asp-for="SelectedExistingGuardianId" id="field-drawer-existing-guardian-id" />
 
-            <!-- STEP 1: STUDENT DETAILS -->
             <div class="drawer-body" id="drawerStep1" style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="drawer-field-group">
                     <label class="drawer-label">Nombre</label>
@@ -923,9 +892,7 @@
                 </div>
             </div>
 
-            <!-- STEP 2: GUARDIAN DETAILS -->
             <div class="drawer-body" id="drawerStep2" style="display: none; flex-direction: column; gap: 20px;">
-                <!-- Hidden inputs for selected existing guardian details -->
                 <input type="hidden" asp-for="GuardianName" id="field-drawer-guardian-name" />
                 <input type="hidden" asp-for="GuardianLastName" id="field-drawer-guardian-lastname" />
                 <input type="hidden" asp-for="GuardianEmail" id="field-drawer-guardian-email" />
@@ -951,7 +918,6 @@
                 </div>
             </div>
             
-            <!-- BUTTONS -->
             <div class="drawer-footer" id="drawerFooterStep1">
                 <button type="button" class="btn-drawer-cancel" onclick="closeDrawer()">Cancelar</button>
                 <button type="button" class="btn-drawer-submit" id="btnNextStep" onclick="goToStep2()">+ Agregar Acudiente</button>
@@ -963,7 +929,6 @@
         </form>
     </div>
 
-    <!-- REGULAR GUARDIAN LINK DRAWER PANEL (For modal trigger to ADD guardian) -->
     <div class="drawer-form-panel" id="guardianDrawer" style="z-index: 1070; transform: translate3d(100%, 0, 0); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
         <div class="drawer-header">
             <h2 class="drawer-title" id="addGuardianDrawerTitle">Agregar Acudiente</h2>
@@ -1022,13 +987,11 @@
 
 
 
-    <!-- GENERAL DELETE GUARDIAN FORM -->
     <form method="post" asp-page-handler="DeleteGuardian" id="deleteGuardianForm" style="display:none;">
         <input type="hidden" asp-for="GuardianStudentId" id="deleteGuardianStudentId" />
         <input type="hidden" asp-for="DeletingGuardianId" id="deleteGuardianId" />
     </form>
 
-    <!-- SLIDING DRAWER BACKDROP -->
     <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
 
     <script>
@@ -1037,7 +1000,6 @@
         const titleEl = document.getElementById('drawerTitle');
         const formEl = document.getElementById('drawerForm');
 
-        // Fields
         const idInput = document.getElementById('field-id');
         const nameInput = document.getElementById('field-name');
         const lastnameInput = document.getElementById('field-lastname');
@@ -1048,14 +1010,11 @@
         function openCreateDrawer() {
             isEditMode = false;
             
-            // Set Titles & Actions
             document.getElementById('drawerTitle').textContent = 'Registrar Nuevo Estudiante';
             formEl.setAttribute('action', '/Students?handler=Create');
             
-            // Reset to Step 1
             goToStep1();
             
-            // Clear student inputs
             idInput.value = '';
             nameInput.value = '';
             lastnameInput.value = '';
@@ -1063,7 +1022,6 @@
             document.getElementById('field-matricula').readOnly = false;
             gradeInput.value = '';
             
-            // Clear step 2 guardian fields
             document.getElementById('field-drawer-existing-guardian-id').value = '';
             document.getElementById('field-drawer-guardian-name').value = '';
             document.getElementById('field-drawer-guardian-lastname').value = '';
@@ -1074,12 +1032,10 @@
             document.getElementById('field-drawer-guardian-name').readOnly = false;
             document.getElementById('field-drawer-guardian-lastname').readOnly = false;
 
-            // Rename fields for model binding
             nameInput.setAttribute('name', 'NewStudent.Name');
             lastnameInput.setAttribute('name', 'NewStudent.LastName');
             gradeInput.setAttribute('name', 'NewStudent.GradeId');
 
-            // Show footer next button
             document.getElementById('btnNextStep').textContent = '+ Agregar Acudiente';
             document.getElementById('btnNextStep').setAttribute('onclick', 'goToStep2()');
 
@@ -1090,27 +1046,22 @@
         function openEditDrawer(id, name, lastname, email, phone, phonetype, gradeId, matricula) {
             isEditMode = true;
             
-            // Set Titles & Actions
             document.getElementById('drawerTitle').textContent = 'Modificar Estudiante';
             formEl.setAttribute('action', '/Students?handler=Edit');
             
-            // Force Step 1
             goToStep1();
             
-            // Fill inputs
             idInput.value = id;
             nameInput.value = name;
             lastnameInput.value = lastname;
             document.getElementById('field-matricula').value = matricula;
-            document.getElementById('field-matricula').readOnly = true; // Read-only on edit
+            document.getElementById('field-matricula').readOnly = true; 
             gradeInput.value = gradeId;
             
-            // Rename fields for model binding
             nameInput.setAttribute('name', 'EditingStudent.Name');
             lastnameInput.setAttribute('name', 'EditingStudent.LastName');
             gradeInput.setAttribute('name', 'EditingStudent.GradeId');
 
-            // In Edit mode, the button directly submits Step 1
             document.getElementById('btnNextStep').textContent = 'Guardar Cambios';
             document.getElementById('btnNextStep').setAttribute('onclick', 'submitEditForm()');
 
@@ -1152,7 +1103,6 @@
             panel.classList.remove('open');
         }
 
-        // ACUDIENTES MODAL FUNCTIONS
         let currentViewingStudentId = '';
 
         function openGuardiansModalFromButton(btn) {
@@ -1214,7 +1164,6 @@
             document.getElementById('guardiansModal').classList.remove('open');
         }
 
-        // REGULAR GUARDIAN LINK DRAWER FUNCTIONS (ADD GUARDIAN FROM MODAL)
         function openGuardianDrawer(studentId) {
             document.getElementById('field-guardian-student-id').value = studentId;
             
