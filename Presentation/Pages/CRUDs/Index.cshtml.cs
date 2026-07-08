@@ -1,5 +1,4 @@
-using App.Core.Application.Interfaces;
-using App.Core.Application.ViewModels;
+/*using App.Core.Application.Interfaces;
 using App.Core.Application.DTOs.Teacher;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using App.Core.Application.ViewModels.Teacher;
 
 namespace Presentation.Pages
 {
@@ -22,15 +22,9 @@ namespace Presentation.Pages
         }
 
         public List<TeacherViewModel> Teachers { get; set; } = new();
-        public List<string> Specialties { get; set; } = new() { "Todas", "Matemáticas", "Ciencias", "Historia", "Lengua Española", "Inglés" };
 
         [BindProperty(SupportsGet = true)]
-        public string? SearchTerm { get; set; }
 
-        [BindProperty(SupportsGet = true)]
-        public string? SelectedSpecialty { get; set; }
-
-        [BindProperty]
         public SaveTeacherViewModel NewTeacher { get; set; } = new();
 
         [BindProperty]
@@ -172,4 +166,4 @@ namespace Presentation.Pages
             return RedirectToPage();
         }
     }
-}
+}*/

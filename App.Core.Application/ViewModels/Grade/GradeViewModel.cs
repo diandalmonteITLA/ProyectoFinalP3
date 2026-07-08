@@ -1,6 +1,6 @@
 using System;
 
-namespace App.Core.Application.ViewModels
+namespace App.Core.Application.ViewModels.Grade
 {
     public class GradeViewModel
     {

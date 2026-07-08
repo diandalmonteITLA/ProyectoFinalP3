@@ -1,5 +1,5 @@
 using App.Core.Application.Interfaces;
-using App.Core.Application.ViewModels;
+using App.Core.Application.ViewModels.Grade;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace App.Core.Application.ViewModels
+namespace App.Core.Application.ViewModels.Student
 {
     public class SaveStudentViewModel
     {

@@ -3,7 +3,7 @@ using App.Core.Application.DTOs.Students;
 using App.Core.Domain.Entities;
 using App.Core.Application.DTOs;
 
-namespace App.Core.Application.Mappings
+namespace App.Core.Application.Mappings.EntitiesAndDtos
 {
     public class StudentMappingProfile : Profile
     {

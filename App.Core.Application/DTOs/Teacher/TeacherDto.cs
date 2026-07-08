@@ -1,4 +1,5 @@
-﻿using App.Core.Application.DTOs.Students;
+﻿using App.Core.Application.DTOs.Grades;
+using App.Core.Application.DTOs.Students;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace App.Core.Application.DTOs.Teacher
         public string Email { get; set; } = string.Empty;
 
         public ICollection<PhoneNumberDto> PhoneNumbers { get; set; } = [];
+
+        public ICollection<string>? ManagedGradeNames { get; set; }
 
     }
 }

@@ -1,0 +1,58 @@
+﻿@page
+@model SaveTeacherViewModel
+@{
+    bool editMode = ViewBag.editMode ?? false;
+}
+
+<div class="drawer-form-panel" id="drawerPanel">
+    <div class="drawer-header">
+        <h2 class="drawer-title" id="drawerTitle">@(editMode ? "Editar" : "Registrar Nuevo") Docente</h2>
+    </div>
+
+    <form asp-controller="Teacher" asp-action="@(editMode ? "Edit" : "Create")" method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">
+        <input type="hidden" asp-for="Id" id="field-id" />
+
+        <div class="drawer-body">
+            <div class="row">
+                <div class="col drawer-field-group">
+                    <label class="drawer-label">Nombre</label>
+                    <input asp-for="Name" class="drawer-input" id="field-name" placeholder="ej. Alejandro" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col drawer-field-group">
+                    <label class="drawer-label">Apellido</label>
+                    <input asp-for="LastName" class="drawer-input" id="field-lastname" placeholder="ej. Ortiz" required />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="drawer-field-group">
+                <label class="drawer-label">Correo Electrónico</label>
+                <input asp-for="Email" class="drawer-input" type="email" id="field-email" placeholder="ej. a.ortiz@docente.edu.do" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-8 drawer-field-group">
+                    <label class="drawer-label">Número Telefónico</label>
+                    <input asp-for="PhoneNumber.Number" class="drawer-input" id="field-phone" placeholder="ej. 809-555-0101" required />
+                    <span asp-validation-for="PhoneNumber.Number" class="text-danger"></span>
+                </div>
+                <div class="col-4 drawer-field-group">
+                    <label class="drawer-label">Tipo</label>
+                    <select asp-for="PhoneNumber.Type" class="drawer-input" id="field-phonetype" style="padding: 0 8px;">
+                        <option value="Mobile">Celular</option>
+                        <option value="Home">Casa</option>
+                        <option value="Work">Trabajo</option>
+                    </select>
+                    <span asp-validation-for="PhoneNumber.Type" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="drawer-footer">
+            <a asp-controller="Docente" asp-action="Index" class="btn-drawer-cancel" style="text-decoration: none; text-align: center;">Cancelar</a>
+            <button type="submit" class="btn-drawer-submit" id="btnDrawerSubmit">Guardar Docente</button>
+        </div>
+    </form>
+</div>

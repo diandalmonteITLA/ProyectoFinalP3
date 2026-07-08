@@ -1,5 +1,4 @@
 using App.Core.Application.Interfaces;
-using App.Core.Application.ViewModels;
 using App.Core.Application.DTOs.Guardians;
 using App.Core.Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using App.Core.Application.ViewModels.Guardian;
 
 namespace Presentation.Pages
 {

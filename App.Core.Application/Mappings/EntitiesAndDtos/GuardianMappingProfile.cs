@@ -2,7 +2,7 @@ using AutoMapper;
 using App.Core.Application.DTOs.Guardians;
 using App.Core.Domain.Entities;
 
-namespace App.Core.Application.Mappings
+namespace App.Core.Application.Mappings.EntitiesAndDtos
 {
     public class GuardianMappingProfile : Profile
     {

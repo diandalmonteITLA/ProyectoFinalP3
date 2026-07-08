@@ -8,8 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using App.Core.Application.ViewModels.Student;
+using App.Core.Application.ViewModels.Guardian;
+using App.Core.Application.ViewModels.Grade;
 
-namespace Presentation.Pages
+namespace App.Presentation.Web.Pages.Views.CRUDs
 {
     [Authorize]
     public class StudentsModel : PageModel

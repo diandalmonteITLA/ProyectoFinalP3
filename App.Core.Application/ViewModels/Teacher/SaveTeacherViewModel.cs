@@ -2,7 +2,7 @@ using App.Core.Application.DTOs;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace App.Core.Application.ViewModels
+namespace App.Core.Application.ViewModels.Teacher
 {
     public class SaveTeacherViewModel
     {
@@ -19,12 +19,5 @@ namespace App.Core.Application.ViewModels
         public string Email { get; set; } = string.Empty;
 
         public PhoneNumberDto PhoneNumber { get; set; } = new() { Number = string.Empty };
-
-        public string? Specialty { get; set; }
-        public string? Department { get; set; }
-
-        [DataType(DataType.Password)]
-        public string? Password { get; set; }
-        public string? Status { get; set; }
     }
 }
