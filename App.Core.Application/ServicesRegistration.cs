@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using AutoMapper.Configuration;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using App.Core.Application.Helpers;
 using App.Core.Application.Interfaces;
 using App.Core.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System.Transactions;
 
 namespace App.Core.Application
 {
@@ -16,7 +13,12 @@ namespace App.Core.Application
         public static void AddApplicationLayerIoc(this IServiceCollection services)
         {
             #region Configurations
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            var currentAssembly = Assembly.GetExecutingAssembly();
+
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddMaps(currentAssembly);
+            });
             #endregion
             #region Services IOC
             services.AddScoped<IGuardianService, GuardianService>();

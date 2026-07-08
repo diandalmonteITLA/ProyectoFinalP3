@@ -25,8 +25,8 @@ namespace App.Infrastructure.Persistence.EntityConfigurations
                     j.ToTable("StudentGuardians");
 
                     // Nombrando explicitamente los campos de los foreign keys
-                    j.Property("GuardianId").HasColumnName("GuardianId");
-                    j.Property("StudentId").HasColumnName("StudentId");
+                    j.Property<Guid>("GuardianId").HasColumnName("GuardianId");
+                    j.Property<Guid>("StudentId").HasColumnName("StudentId");
                 });
 
             builder.HasOne(s => s.Grade)
