@@ -1,11 +1,11 @@
 using App.Core.Application.DTOs.Students;
 using App.Core.Application.Interfaces;
+using App.Core.Application.Services;
+using App.Core.Application.ViewModels;
+using App.Core.Application.ViewModels.Student;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace App.Presentation.Web.Controllers
 {
@@ -13,17 +13,20 @@ namespace App.Presentation.Web.Controllers
     public class StudentController : Controller
     {
         private readonly IStudentService _studentService;
+        private readonly IMapper _mapper;
 
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService, IMapper mapper)
         {
             _studentService = studentService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var students = await _studentService.GetAllAsync(includeInactive: false);
-            return View(students);
+            var dtos = await _studentService.GetAllAsync(includeInactive: false);
+            var TeacherViewModel = _mapper.Map<List<StudentViewModel>>(dtos);
+            return View(TeacherViewModel);
         }
 
         [HttpGet]

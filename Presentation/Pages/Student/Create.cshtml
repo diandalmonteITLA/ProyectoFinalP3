@@ -1,4 +1,48 @@
 ﻿@page
-@model App.Presentation.Web.Pages.Student.RegisterModel
+@model SaveStudentViewModel
 @{
+    bool editMode = ViewBag.editMode ?? false;
 }
+
+<div class="drawer-form-panel" id="drawerPanel">
+    <div class="drawer-header">
+        <h2 class="drawer-title" id="drawerTitle">@(editMode ? "Editar" : "Registrar Nuevo") Estudiante</h2>
+    </div>
+
+    <form asp-controller="Student" asp-action="@(editMode ? "Edit" : "Create")" method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">
+        <input type="hidden" asp-for="studentViewModel.Id" id="field-id" />
+
+        <div class="drawer-body">
+            <div class="row">
+                <div class="col drawer-field-group">
+                    <label class="drawer-label">Nombre</label>
+                    <input asp-for="studentViewModel.Name" class="drawer-input" id="field-name" placeholder="ej. Alejandro" required />
+                    <span asp-validation-for="studentViewModel" class="text-danger"></span>
+                </div>
+                <div class="col drawer-field-group">
+                    <label class="drawer-label">Apellido</label>
+                    <input asp-for="studentViewModel.LastName" class="drawer-input" id="field-lastname" placeholder="ej. Ortiz" required />
+                    <span asp-validation-for="studentViewModel.LastName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="drawer-field-group">
+                <label class="drawer-label">Grado</label>
+                <select asp-for="studentViewModel.GradeId" class="drawer-input" id="field-grade" style="padding: 0 12px;" required>
+                    <option value="">Seleccionar grado...</option>
+                    @foreach (var grade in Model.gradeViewModels)
+                    {
+                        <option value="@grade.Id">@grade.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="drawr-field-group" style="margin-top: 10px;">
+                <label class="drawer-label">Acudiente</label>
+                <input asp-for="studentViewModel.GuardiansId" class="drawer-input" id="drawerGuardianSearchInput" placeholder="🔍 Buscar acudiente..." oninput="filterDrawerGuardians()" onfocus="showDrawerGuardiansList()" />
+            </div>
+
+        <div class="drawer-footer">
+            <a asp-controller="Student" asp-action="Index" class="btn-drawer-cancel" style="text-decoration: none; text-align: center;">Cancelar</a>
+            <button type="submit" class="btn-drawer-submit" id="btnDrawerSubmit">Guardar Estudiante</button>
+        </div>
+    </form>
+</div>
