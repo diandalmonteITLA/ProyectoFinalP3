@@ -12,7 +12,7 @@ namespace App.Core.Domain.Entities
         public Guid Id { get; set; }
         public required string Name { get; set; }
 
-        public Guid TeacherId { get; set; }
+        public Guid? TeacherId { get; set; }
         public Teacher? TeacherInCharge { get; set; }
 
         public ICollection<Student>? Students { get; set; }

@@ -14,7 +14,9 @@ namespace App.Core.Application.Mappings.DtosAndViewModels
     {
         public StudentDtoMappingProfile()
         {
+            CreateMap<StudentDto, ShowStudentViewModel>().ReverseMap();
             CreateMap<StudentDto, StudentViewModel>().ReverseMap();
+            CreateMap<CreateStudentDto, SaveStudentViewModel>().ReverseMap();
         }
     }
 }

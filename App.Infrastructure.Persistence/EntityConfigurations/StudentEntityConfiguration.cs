@@ -29,6 +29,7 @@ namespace App.Infrastructure.Persistence.EntityConfigurations
                     j.Property<Guid>("StudentId").HasColumnName("StudentId");
                 });
 
+
             builder.HasOne(s => s.Grade)
                 .WithMany(g => g.Students)
                 .HasForeignKey(s => s.GradeId);

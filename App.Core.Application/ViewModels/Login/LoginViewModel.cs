@@ -9,9 +9,12 @@ namespace App.Core.Application.ViewModels.Login
 {
     public class LoginViewModel
     {
-        [Required]
-        public string UserName { get; set; } = string.Empty;
-        [Required]
-        public string Password { get; set; } = string.Empty;
+        [Required(ErrorMessage = "You must enter the username of user")]
+        [DataType(DataType.Text)]
+        public required string UserName { get; set; }
+
+        [Required(ErrorMessage = "You must enter the password of user")]
+        [DataType(DataType.Password)]
+        public required string Password { get; set; }
     }
 }

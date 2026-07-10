@@ -438,28 +438,6 @@
                     <a href="/Grades" class="btn-filter" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center; height: 38px; border: 1px solid var(--color-border); border-radius: 8px; padding: 0 16px; font-size: 12px; color: var(--color-text-dark);">Limpiar</a>
                 }
             </section>
-
-            <section class="cards-grid">
-                @if (!Model.Grades.Any())
-                {
-                    <div style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px; background: #ffffff; border-radius: 16px; border: 1px solid var(--color-border);">
-                        No se encontraron grados registrados con ese criterio.
-                    </div>
-                }
-                else
-                {
-                    @foreach (var grade in Model.Grades)
-                    {
-                        <div class="grade-card">
-                            <div class="grade-status-dot"></div>
-                            <h3 class="grade-title">@grade.Name</h3>
-                            <span class="grade-teacher">Docente: @grade.TeacherName</span>
-                            <div class="grade-divider"></div>
-                            <div class="student-count-pill">@grade.StudentCount Alumnos</div>
-                        </div>
-                    }
-                }
-            </section>
         </main>
     </div>
 </body>

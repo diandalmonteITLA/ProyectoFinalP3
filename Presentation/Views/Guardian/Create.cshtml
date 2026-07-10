@@ -1,12 +1,11 @@
-﻿@page
-@model SaveGuardianViewModel
+﻿@model SaveGuardianViewModel
 @{
     bool editMode = ViewBag.editMode ?? false;
 }
 
 <div class="drawer-form-panel" id="drawerPanel">
     <div class="drawer-header">
-        <h2 class="drawer-title" id="drawerTitle">@(editMode ? "Editar" : "Registrar Nuevo") Guardian</h2>
+        <h2 class="drawer-title" id="drawerTitle">@(editMode ? "Editar" : "Registrar Nuevo") Acudiente</h2>
     </div>
 
     <form asp-controller="Guardian" asp-action="@(editMode ? "Edit" : "Create")" method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">

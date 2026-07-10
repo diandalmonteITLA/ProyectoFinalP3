@@ -4,9 +4,10 @@
     Layout = "_LayoutCoordinator";
 }
 
-<button class="btn-primary-custom" onclick="openCreateDrawer()">
+<a asp-controller="Student" asp-action="Create"
+   class="btn-primary-custom" title="Editar">
     + Registrar Estudiante
-</button>
+</a>
 
 <section class="cards-grid">
     @if (!Model.Any())
