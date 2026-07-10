@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using App.Core.Application.DTOs.User;
 using App.Core.Application.ViewModels;
+using App.Core.Application.ViewModels.Login;
 namespace App.Core.Application.Mappings.DtosAndViewModels
 {
     public class UserDtoMappingProfile : Profile

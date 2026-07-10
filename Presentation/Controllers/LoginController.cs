@@ -1,10 +1,10 @@
 using App.Core.Application.DTOs.User;
-using App.Core.Application.ViewModels;
 using App.Infrastructure.Identity.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using App.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using App.Core.Application.ViewModels.Login;
 
 namespace App.Presentation.Web.Controllers
 {
@@ -26,7 +26,7 @@ namespace App.Presentation.Web.Controllers
                     return await RedirectBasedOnRole(User.Identity.Name ?? "");
                 }
 
-                return View(new LoginViewModel());
+                return View(new LoginViewModel() { UserName = "", Password = ""});
             }
 
             [HttpPost]
@@ -51,7 +51,7 @@ namespace App.Presentation.Web.Controllers
                         throw new NotImplementedException();
                     }
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Student");
                 }
 
                 foreach (var error in userDto?.Errors ?? [])
@@ -101,7 +101,7 @@ namespace App.Presentation.Web.Controllers
                     }
                 }
 
-                return View(new LoginViewModel());
+                return View(new LoginViewModel() { UserName="", Password="" });
             }
             #endregion
     }

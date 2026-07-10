@@ -1,0 +1,59 @@
+﻿@model LoginViewModel
+@{
+    Layout = "_LayoutLogin";
+}
+<body>
+    <div class="login-container">
+        <div class="branding-panel">
+            <div class="branding-content-top">
+                <div class="gold-line"></div>
+                <h1 class="branding-title">Cultivando el<br>saber y la virtud.</h1>
+            </div>
+            <div class="branding-content-bottom">
+                <p class="branding-quote">"La educación no es preparación para la vida; la educación es la vida misma."</p>
+                <p class="branding-author">— John Dewey</p>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <div class="login-card">
+                <h2 class="card-header-title">Ingresar al Portal</h2>
+                <p class="card-header-subtitle">Acceso seguro para la comunidad coordinativa y docente.</p>
+
+                <form asp-controller="Login" asp-action="Index" method="post">
+                    <!--<input type="hidden" asp-for="ReturnUrl" />-->
+
+                    <div class="form-group">
+                        <label asp-for="UserName" class="form-label">Correo electrónico</label>
+                        <div class="input-wrapper">
+                            <input asp-for="UserName" class="form-input" placeholder="ej. mat.10283@docente.edu.do" autocomplete="username" required />
+                        </div>
+                        <span asp-validation-for="UserName" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Password" class="form-label">Contraseña</label>
+                        <div class="input-wrapper">
+                            <input asp-for="Password" class="form-input" type="password" placeholder="••••••••••••" autocomplete="current-password" required />
+                        </div>
+                        <span asp-validation-for="Password" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="forgot-password-container">
+                        <a href="/ForgotPassword" class="forgot-password-link">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Ingresar</button>
+                </form>
+
+                <p class="card-footer-text">
+                    &copy; Si aún no cuentas con tus credenciales de acceso, favor de solicitarlas en el Departamento de Administración.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>

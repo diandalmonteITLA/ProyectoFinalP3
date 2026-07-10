@@ -1,29 +1,40 @@
 using App.Core.Application.DTOs.Students;
 using App.Core.Application.Interfaces;
+using App.Core.Application.ViewModels.Grade;
+using App.Core.Application.ViewModels.Student;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using App.Core.Application.Mappings.DtosAndViewModels;
+using App.Core.Application.ViewModels.Guardian;
+using App.Core.Application.DTOs.Grades;
+using System.Collections.ObjectModel;
+using App.Core.Application.DTOs.Guardians;
 
 namespace App.Presentation.Web.Controllers
 {
     [Authorize(Roles = "Coordinator")]
     public class StudentController : Controller
     {
+        private readonly IGradeService _gradeService;
+        private readonly IGuardianService _guardianService;
         private readonly IStudentService _studentService;
+        private readonly IMapper _mapper;
 
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService, IMapper mapper, IGradeService gradeService, IGuardianService guardianService)
         {
+            _gradeService = gradeService;
             _studentService = studentService;
+            _mapper = mapper;
+            _guardianService = guardianService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var students = await _studentService.GetAllAsync(includeInactive: false);
-            return View(students);
+            var dtos = await _studentService.GetAllAsync(includeInactive: false);
+            var StudentViewModel = _mapper.Map<List<ShowStudentViewModel>>(dtos);
+            return View(StudentViewModel);
         }
 
         [HttpGet]
@@ -38,29 +49,35 @@ namespace App.Presentation.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            SaveStudentViewModel viewModel = new SaveStudentViewModel();
+            await PopulateDropdownListsAsync(viewModel);
+            ViewBag.editMode = false;
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateStudentDto createStudentDto)
+        public async Task<IActionResult> Create(SaveStudentViewModel saveStudentVm)
         {
             if (!ModelState.IsValid)
             {
-                return View(createStudentDto);
+                await PopulateDropdownListsAsync(saveStudentVm);
+                return View(saveStudentVm);
             }
 
             try
             {
-                await _studentService.AddAsync(createStudentDto);
+                var dto = _mapper.Map<CreateStudentDto>(saveStudentVm);
+                await _studentService.AddAsync(dto);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
-            {
+            {   
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return View(createStudentDto);
+                await PopulateDropdownListsAsync(saveStudentVm);
+                return View(saveStudentVm);
             }
         }
 
@@ -137,6 +154,15 @@ namespace App.Presentation.Web.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
                 return View(student);
             }
+        }
+
+        private async Task PopulateDropdownListsAsync(SaveStudentViewModel viewModel)
+        {
+            IReadOnlyCollection<GradeDto> grades = await _gradeService.GetAllAsync();
+            viewModel.gradeViewModels = _mapper.Map<List<GradeViewModel>>(grades);
+
+            IReadOnlyCollection<GuardianDto> guardians = await _guardianService.GetAllAsync(true);
+            viewModel.guardianViewModels = _mapper.Map<List<GuardianViewModel>>(guardians);
         }
     }
 }

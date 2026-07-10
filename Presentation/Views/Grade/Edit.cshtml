@@ -1,0 +1,36 @@
+﻿@model EditGradeViewModel
+@{
+
+	Layout = "_LayoutCoordinator";
+}
+
+<div class="drawer-form-panel" id="drawerPanel">
+    <div class="drawer-header">
+        <h2 class="drawer-title" id="drawerTitle"> Editar Curso</h2>
+    </div>
+
+    <form asp-controller="Grade" asp-action="Edit" method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">
+        <input type="hidden" asp-for="Grade.Id" id="field-id" />
+
+        <div class="drawer-body">
+            <div class="row">
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Docente</label>
+                    <select asp-for="Grade.TeacherId" class="drawer-input" id="field-grade" style="padding: 0 12px;" required>
+                        <option value="">Seleccionar docente...</option>
+                        @foreach (var teacher in Model.ActiveTeachers)
+                        {
+                            <option value="@teacher.Name">@teacher.LastName</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="drawer-footer">
+            <a asp-controller="Docente" asp-action="Index" class="btn-drawer-cancel" style="text-decoration: none; text-align: center;">Cancelar</a>
+            <button type="submit" class="btn-drawer-submit" id="btnDrawerSubmit">Guardar Docente</button>
+        </div>
+    </form>
+</div>

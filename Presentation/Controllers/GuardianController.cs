@@ -1,10 +1,10 @@
 using App.Core.Application.DTOs.Guardians;
 using App.Core.Application.Interfaces;
+using App.Core.Application.Services;
+using App.Core.Application.ViewModels.Guardian;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace App.Presentation.Web.Controllers
 {
@@ -13,16 +13,20 @@ namespace App.Presentation.Web.Controllers
     {
         private readonly IGuardianService _guardianService;
 
-        public GuardianController(IGuardianService guardianService)
+        private readonly IMapper _mapper;
+
+        public GuardianController(IGuardianService guardianService, IMapper mapper)
         {
             _guardianService = guardianService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var guardians = await _guardianService.GetAllAsync(includeInactive: false);
-            return View(guardians);
+            var dtos = await _guardianService.GetAllAsync(includeInactive: false);
+            var TeacherViewModel = _mapper.Map<List<GuardianViewModel>>(dtos);
+            return View(TeacherViewModel);
         }
 
         [HttpGet]

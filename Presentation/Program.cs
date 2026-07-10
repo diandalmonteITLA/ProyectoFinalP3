@@ -1,9 +1,5 @@
-using App.Core.Application.Mappings;
 using App.Infrastructure.Persistence;
 using App.Infrastructure.Identity;
-using AutoMapper;
-using App.Core.Application.Interfaces;
-using App.Core.Application.Services;
 using App.Core.Application;
 
 namespace Presentation
@@ -23,6 +19,7 @@ namespace Presentation
             var app = builder.Build();
 
             await app.Services.RunIdentitySeedAsync();
+            await app.Services.RunDataSeedAsync();
 
             if (!app.Environment.IsDevelopment())
             {
@@ -38,7 +35,10 @@ namespace Presentation
             app.UseAuthorization();
 
             app.MapStaticAssets();
-            app.MapControllers();
+            app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Login}/{action=Index}/{id?}")
+    .WithStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();
 

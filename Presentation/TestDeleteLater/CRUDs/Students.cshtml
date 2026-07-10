@@ -1,0 +1,1323 @@
+@*
+@model Presentation.Pages.CRUDs.StudentsModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Estudiantes Inscritos - Portal de Gestión";
+}
+@/*
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Instituto Tecnológico de Las Américas</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        :root {
+            --color-bg-page: #F8FAFC;
+            --color-sidebar-bg: #0B0F19;
+            --color-accent: #D97706;
+            --color-text-dark: #0F172A;
+            --color-text-muted: #94A3B8;
+            --color-text-label: #475569;
+            --color-border: #E2E8F0;
+            --color-card-bg: #FFFFFF;
+            --color-input-bg: #F8FAFC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-bg-page);
+            color: var(--color-text-dark);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--color-sidebar-bg);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 36px 0;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            margin-bottom: 48px;
+        }
+
+        .brand-emblem {
+            width: 24px;
+            height: 24px;
+            background-color: var(--color-accent);
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.01em;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 16px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #94A3B8;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .menu-link svg {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .menu-item.active .menu-link {
+            color: #ffffff;
+            background-color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        .main-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .academic-banner {
+            width: 100%;
+            height: 160px;
+            border-radius: 16px;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1280&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px 40px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .academic-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.85);
+            z-index: 1;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .banner-accent-bar {
+            width: 80px;
+            height: 4px;
+            background-color: var(--color-accent);
+            margin-bottom: 12px;
+            border-radius: 2px;
+        }
+
+        .banner-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-accent);
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+
+        .banner-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+
+        .banner-description {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .user-floating-profile {
+            position: relative;
+            z-index: 2;
+            width: 220px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .profile-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-username {
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .profile-userrole {
+            font-size: 9px;
+            color: var(--color-accent);
+            margin-top: 1px;
+            font-weight: 500;
+        }
+
+        .profile-logout-btn {
+            margin-left: auto;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .profile-logout-btn:hover {
+            color: #EF4444;
+        }
+
+        .workspace-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .table-search-input {
+            width: 320px;
+            height: 38px;
+            background-color: #ffffff;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 0 16px;
+            font-size: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .table-search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+        }
+
+        .btn-filter {
+            height: 38px;
+            background-color: #ffffff;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 0 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-filter:hover {
+            background-color: var(--color-input-bg);
+        }
+
+        .btn-primary-custom {
+            height: 38px;
+            background-color: #0B0F19;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 0 24px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #1e293b;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .student-card {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .student-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        }
+
+        .student-status-dot {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .student-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar-circle {
+            width: 48px;
+            height: 48px;
+            background-color: #F1F5F9;
+            border: 1px solid var(--color-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            flex-shrink: 0;
+        }
+
+        .student-identity {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .student-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--color-text-dark);
+        }
+
+        .student-id {
+            font-size: 11px;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .card-divider {
+            height: 1px;
+            background-color: var(--color-border);
+            width: 100%;
+        }
+
+        .student-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .student-grade-label {
+            font-size: 11px;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .student-grade-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            margin-left: 4px;
+        }
+
+        .action-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-action-icon {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #94A3B8;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-action-icon:hover {
+            color: #0F172A;
+        }
+
+        .btn-action-icon.btn-delete:hover {
+            color: #EF4444;
+        }
+
+        .btn-action-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .teachers-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .teachers-table th {
+            padding: 14px 24px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--color-text-label);
+            border-bottom: 1px solid var(--color-border);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: #FAFBFD;
+        }
+
+        .teachers-table td {
+            padding: 14px 24px;
+            font-size: 13px;
+            color: var(--color-text-dark);
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: middle;
+        }
+
+        .drawer-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .drawer-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .drawer-form-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 420px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: -8px 0 32px rgba(15, 23, 42, 0.15);
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            transform: translate3d(100%, 0, 0);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px 32px;
+        }
+
+        .drawer-form-panel.open {
+            transform: translate3d(0, 0, 0);
+        }
+
+        .drawer-header {
+            margin-bottom: 32px;
+        }
+
+        .drawer-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text-dark);
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-right: 4px;
+        }
+
+        .drawer-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .drawer-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-label);
+        }
+
+        .drawer-input {
+            width: 100%;
+            height: 42px;
+            background-color: var(--color-input-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 0 16px;
+            font-size: 13px;
+            color: var(--color-text-dark);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .drawer-input:focus {
+            background-color: #ffffff;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+        }
+
+        .drawer-footer {
+            margin-top: 32px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-drawer-cancel {
+            flex: 1;
+            height: 46px;
+            background-color: var(--color-input-bg);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-dark);
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-drawer-cancel:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn-drawer-submit {
+            flex: 1;
+            height: 46px;
+            background-color: #0B0F19;
+            color: #ffffff;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-drawer-submit:hover {
+            background-color: #1e293b;
+        }
+
+        .toast-notification {
+            background-color: #ffffff;
+            border-left: 4px solid var(--color-accent);
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            border: 1px solid var(--color-border);
+            border-left-width: 4px;
+        }
+
+        .toast-success {
+            border-left-color: #16a34a;
+        }
+
+        .toast-error {
+            border-left-color: #dc2626;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .guardians-modal-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            z-index: 1060;
+            width: 760px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(15,23,42,0.15);
+            display: flex;
+            flex-direction: column;
+            padding: 32px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        .guardians-modal-card.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-emblem"></div>
+                <span class="brand-text">Portal de Gestión</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a href="/Index" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Docentes</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="/Students" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                        <span>Estudiantes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Guardians" class="menu-link">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Acudientes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Grades" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Grados</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-workspace">
+            <section class="academic-banner">
+                <div class="banner-content">
+                    <div class="banner-accent-bar"></div>
+                    <span class="banner-subtitle">• PORTAL DE GESTIÓN Y COORDINACIÓN</span>
+                    <h1 class="banner-title">Estudiantes Inscritos</h1>
+                    <p class="banner-description">Listado general de alumnos admitidos en este ciclo académico.</p>
+                </div>
+                
+                <div class="user-floating-profile">
+                    <div class="profile-avatar">CB</div>
+                    <div class="profile-meta">
+                        <span class="profile-username">@User.Identity?.Name</span>
+                        <span class="profile-userrole">Coordinadora General</span>
+                    </div>
+                    <a href="/Logout" class="profile-logout-btn" title="Cerrar Sesión">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; transform: rotate(180deg);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </a>
+                </div>
+            </section>
+
+            @if (!string.IsNullOrEmpty(Model.ActionSuccess))
+            {
+                <div class="toast-notification toast-success">
+                    <span class="toast-message"> @Model.ActionSuccess</span>
+                    <button type="button" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);" onclick="this.parentElement.remove()">✕</button>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.ActionError))
+            {
+                <div class="toast-notification toast-error">
+                    <span class="toast-message"> @Model.ActionError</span>
+                    <button type="button" style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);" onclick="this.parentElement.remove()">✕</button>
+                </div>
+            }
+
+            <section class="workspace-controls">
+                <form method="get" class="search-container">
+                    <input asp-for="SearchTerm" class="table-search-input" placeholder="🔍  Buscar estudiante..." />
+                    
+                    <select asp-for="SelectedGradeId" class="table-search-input" style="width: 200px; cursor: pointer; padding: 0 12px;" onchange="this.form.submit()">
+                        <option value="">Todos los Grados</option>
+                        @foreach (var grade in Model.Grades)
+                        {
+                            <option value="@grade.Id">@grade.Name</option>
+                        }
+                    </select>
+
+                    <button type="submit" class="btn-filter">Filtrar</button>
+                    @if (!string.IsNullOrEmpty(Model.SearchTerm) || Model.SelectedGradeId.HasValue)
+                    {
+                        <a href="/Students" class="btn-filter" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Limpiar</a>
+                    }
+                </form>
+                
+                <button class="btn-primary-custom" onclick="openCreateDrawer()">
+                    + Registrar Estudiante
+                </button>
+            </section>
+
+            <section class="cards-grid">
+                @if (!Model.Students.Any())
+                {
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px; background: #ffffff; border-radius: 16px; border: 1px solid var(--color-border);">
+                        No se encontraron estudiantes inscritos con ese criterio.
+                    </div>
+                }
+                else
+                {
+                    @foreach (var student in Model.Students)
+                    {
+                        var initials = (student.Name.Length > 0 ? student.Name[0].ToString() : "") + (student.LastName.Length > 0 ? student.LastName[0].ToString() : "");
+                        var studentCode = StudentsModel.GetStudentCode(student.Id);
+                        
+                        var guardiansData = System.Text.Json.JsonSerializer.Serialize(student.Guardians.Select(g => new {
+                            id = g.Id,
+                            name = g.FullName,
+                            firstname = g.Name,
+                            lastname = g.LastName,
+                            phone = g.Phone,
+                            email = g.Email
+                        }));
+                        
+                        <div class="student-card">
+                            <div class="student-status-dot"></div>
+                            
+                            <div class="student-header">
+                                <div class="avatar-circle">@initials.ToUpper()</div>
+                                <div class="student-identity">
+                                    <span class="student-name">@student.Name @student.LastName</span>
+                                    <span class="student-id">ID: @studentCode</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-divider"></div>
+                            
+                            <div class="student-footer">
+                                <div class="student-grade-label">
+                                    Grado Escolar: <span class="student-grade-value">@student.GradeName</span>
+                                </div>
+                                <div class="action-group">
+                                    <button class="btn-action-icon btn-view-guardians" title="Ver Acudientes"
+                                            data-id="@student.Id"
+                                            data-name="@student.Name"
+                                            data-lastname="@student.LastName"
+                                            data-code="@studentCode"
+                                            data-grade="@student.GradeName"
+                                            data-guardians="@guardiansData"
+                                            onclick="openGuardiansModalFromButton(this)">
+                                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                    </button>
+
+                                    <button class="btn-action-icon" title="Editar" 
+                                            onclick="openEditDrawer('@student.Id', '@student.Name', '@student.LastName', '', '', '', '@student.GradeId', '@studentCode')">
+                                        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                    </button>
+
+                                    <form method="post" asp-page-handler="Delete" style="display:inline;" onsubmit="return confirm('¿Está seguro de que desea eliminar a este estudiante?')">
+                                        <input type="hidden" name="id" value="@student.Id" />
+                                        <button type="submit" class="btn-action-icon btn-delete" title="Eliminar">
+                                            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </section>
+        </main>
+    </div>
+
+    <div class="drawer-backdrop" id="guardiansBackdrop" onclick="closeGuardiansModal()"></div>
+    <div id="guardiansModal" class="guardians-modal-card">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+            <div class="avatar-circle" id="modal-student-avatar" style="width: 48px; height: 48px;"></div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+                <span class="student-name" id="modal-student-name" style="font-size: 15px; font-weight: 700;"></span>
+                <span class="student-id" id="modal-student-id"></span>
+            </div>
+        </div>
+        <div style="font-size: 13px; color: var(--color-text-muted); margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">
+            <span>Grado Escolar:</span>
+            <span style="font-weight: 700; color: var(--color-text-dark); background-color: #F1F5F9; padding: 4px 12px; border-radius: 6px;" id="modal-student-grade"></span>
+        </div>
+
+        <table class="teachers-table" style="margin-bottom: 32px; border-radius: 8px; overflow: hidden; border: 1px solid var(--color-border);">
+            <thead>
+                <tr>
+                    <th>Acudiente</th>
+                    <th>Número Telefónico</th>
+                    <th>Correo Electrónico</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="guardians-table-body">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="drawer-form-panel" id="drawerPanel">
+        <div class="drawer-header">
+            <h2 class="drawer-title" id="drawerTitle">Registrar Nuevo Estudiante</h2>
+        </div>
+        
+        <form method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">
+            <input type="hidden" asp-for="EditingStudent.Id" id="field-id" />
+            <input type="hidden" asp-for="SelectedExistingGuardianId" id="field-drawer-existing-guardian-id" />
+
+            <div class="drawer-body" id="drawerStep1" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Nombre</label>
+                    <input asp-for="NewStudent.Name" class="drawer-input" id="field-name" placeholder="ej. Alejandro" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Apellido</label>
+                    <input asp-for="NewStudent.LastName" class="drawer-input" id="field-lastname" placeholder="ej. Ortiz Méndez" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Matrícula</label>
+                    <input asp-for="Matricula" class="drawer-input" id="field-matricula" placeholder="ej. 2026001" required />
+                </div>
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Grado</label>
+                    <select asp-for="NewStudent.GradeId" class="drawer-input" id="field-grade" style="padding: 0 12px;" required>
+                        <option value="">Seleccionar grado...</option>
+                        @foreach (var grade in Model.Grades)
+                        {
+                            <option value="@grade.Id">@grade.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="drawer-body" id="drawerStep2" style="display: none; flex-direction: column; gap: 20px;">
+                <input type="hidden" asp-for="GuardianName" id="field-drawer-guardian-name" />
+                <input type="hidden" asp-for="GuardianLastName" id="field-drawer-guardian-lastname" />
+                <input type="hidden" asp-for="GuardianEmail" id="field-drawer-guardian-email" />
+                <input type="hidden" asp-for="GuardianPhone" id="field-drawer-guardian-phone" />
+
+                <div class="drawer-field-group" style="margin-top: 10px;">
+                    <label class="drawer-label" style="color: var(--color-accent); font-weight: 600; font-size: 13px;">Seleccionar Acudiente</label>
+                    <p style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 12px;">Busque y seleccione el acudiente registrado en el sistema que estará a cargo de este estudiante.</p>
+                    <div style="position: relative;">
+                        <input type="text" class="drawer-input" id="drawerGuardianSearchInput" placeholder="🔍 Buscar acudiente..." oninput="filterDrawerGuardians()" onfocus="showDrawerGuardiansList()" />
+                        <div id="drawerGuardiansAutocompleteList" style="position: absolute; bottom: 100%; left: 0; width: 100%; max-height: 150px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 8px; background: #ffffff; display: none; z-index: 1080; box-shadow: 0 4px 12px rgba(15,23,42,0.15); margin-bottom: 4px;">
+                            @foreach (var g in Model.AllGuardians)
+                            {
+                                var phone = g.Phone;
+                                <div class="autocomplete-item-drawer" style="padding: 10px 16px; font-size: 13px; cursor: pointer; border-bottom: 1px solid var(--color-border); transition: background 0.2s;" 
+                                     onmouseover="this.style.backgroundColor='#F1F5F9'" onmouseout="this.style.backgroundColor='transparent'"
+                                     onclick="selectDrawerExistingGuardian('@g.Id', '@g.Name', '@g.LastName', '@g.Email', '@phone')">
+                                    <strong>@g.Name @g.LastName</strong> <span style="font-size:11px; color: var(--color-text-muted);">(@g.Email)</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="drawer-footer" id="drawerFooterStep1">
+                <button type="button" class="btn-drawer-cancel" onclick="closeDrawer()">Cancelar</button>
+                <button type="button" class="btn-drawer-submit" id="btnNextStep" onclick="goToStep2()">+ Agregar Acudiente</button>
+            </div>
+            <div class="drawer-footer" id="drawerFooterStep2" style="display: none;">
+                <button type="button" class="btn-drawer-cancel" onclick="goToStep1()">Atrás</button>
+                <button type="submit" class="btn-drawer-submit" id="btnSubmitDrawer">Guardar Estudiante</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="drawer-form-panel" id="guardianDrawer" style="z-index: 1070; transform: translate3d(100%, 0, 0); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div class="drawer-header">
+            <h2 class="drawer-title" id="addGuardianDrawerTitle">Agregar Acudiente</h2>
+        </div>
+        
+        <form method="post" asp-page-handler="AddGuardian" id="guardianDrawerForm" style="display: flex; flex-direction: column; height: 100%;">
+            <input type="hidden" asp-for="GuardianStudentId" id="field-guardian-student-id" />
+            <input type="hidden" asp-for="SelectedExistingGuardianId" id="field-selected-existing-guardian-id" />
+
+            <div class="drawer-body">
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Nombre</label>
+                    <input asp-for="GuardianName" class="drawer-input" id="field-guardian-name" placeholder="ej. Alejandro" required />
+                </div>
+
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Apellido</label>
+                    <input asp-for="GuardianLastName" class="drawer-input" id="field-guardian-lastname" placeholder="ej. Ortiz" required />
+                </div>
+
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Correo Electrónico</label>
+                    <input asp-for="GuardianEmail" class="drawer-input" type="email" id="field-guardian-email" placeholder="ej. a.ortiz@correo.com" />
+                </div>
+
+                <div class="drawer-field-group">
+                    <label class="drawer-label">Número Telefónico</label>
+                    <input asp-for="GuardianPhone" class="drawer-input" id="field-guardian-phone" placeholder="ej. 809-555-0100" />
+                </div>
+
+                <div class="drawer-field-group" id="searchRegisteredContainer">
+                    <label class="drawer-label" style="color: var(--color-accent); margin-top: 12px; font-weight: 600;">Acudientes ya registrados</label>
+                    <div style="position: relative;">
+                        <input type="text" class="drawer-input" id="guardianSearchInput" placeholder="🔍 Buscar acudiente..." oninput="filterGuardiansList()" onfocus="showGuardiansList()" />
+                        <div id="guardiansAutocompleteList" style="position: absolute; top: 100%; left: 0; width: 100%; max-height: 150px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 8px; background: #ffffff; display: none; z-index: 1080; box-shadow: 0 4px 12px rgba(15,23,42,0.15); margin-top: 4px;">
+                            @foreach (var g in Model.AllGuardians)
+                            {
+                                var phone = g.Phone;
+                                <div class="autocomplete-item" style="padding: 10px 16px; font-size: 13px; cursor: pointer; border-bottom: 1px solid var(--color-border); transition: background 0.2s;" 
+                                     onmouseover="this.style.backgroundColor='#F1F5F9'" onmouseout="this.style.backgroundColor='transparent'"
+                                     onclick="selectExistingGuardian('@g.Id', '@g.Name', '@g.LastName', '@g.Email', '@phone')">
+                                    <strong>@g.Name @g.LastName</strong> <span style="font-size:11px; color: var(--color-text-muted);">(@g.Email)</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="drawer-footer">
+                <button type="button" class="btn-drawer-cancel" onclick="closeGuardianDrawer()">Cancelar</button>
+                <button type="submit" class="btn-drawer-submit" id="btnSubmitAddGuardian">Agregar</button>
+            </div>
+        </form>
+    </div>
+
+
+
+    <form method="post" asp-page-handler="DeleteGuardian" id="deleteGuardianForm" style="display:none;">
+        <input type="hidden" asp-for="GuardianStudentId" id="deleteGuardianStudentId" />
+        <input type="hidden" asp-for="DeletingGuardianId" id="deleteGuardianId" />
+    </form>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
+
+    <script>
+        const backdrop = document.getElementById('drawerBackdrop');
+        const panel = document.getElementById('drawerPanel');
+        const titleEl = document.getElementById('drawerTitle');
+        const formEl = document.getElementById('drawerForm');
+
+        const idInput = document.getElementById('field-id');
+        const nameInput = document.getElementById('field-name');
+        const lastnameInput = document.getElementById('field-lastname');
+        const gradeInput = document.getElementById('field-grade');
+
+        let isEditMode = false;
+
+        function openCreateDrawer() {
+            isEditMode = false;
+            
+            document.getElementById('drawerTitle').textContent = 'Registrar Nuevo Estudiante';
+            formEl.setAttribute('action', '/Students?handler=Create');
+            
+            goToStep1();
+            
+            idInput.value = '';
+            nameInput.value = '';
+            lastnameInput.value = '';
+            document.getElementById('field-matricula').value = '';
+            document.getElementById('field-matricula').readOnly = false;
+            gradeInput.value = '';
+            
+            document.getElementById('field-drawer-existing-guardian-id').value = '';
+            document.getElementById('field-drawer-guardian-name').value = '';
+            document.getElementById('field-drawer-guardian-lastname').value = '';
+            document.getElementById('field-drawer-guardian-email').value = '';
+            document.getElementById('field-drawer-guardian-phone').value = '';
+            document.getElementById('drawerGuardianSearchInput').value = '';
+
+            document.getElementById('field-drawer-guardian-name').readOnly = false;
+            document.getElementById('field-drawer-guardian-lastname').readOnly = false;
+
+            nameInput.setAttribute('name', 'NewStudent.Name');
+            lastnameInput.setAttribute('name', 'NewStudent.LastName');
+            gradeInput.setAttribute('name', 'NewStudent.GradeId');
+
+            document.getElementById('btnNextStep').textContent = '+ Agregar Acudiente';
+            document.getElementById('btnNextStep').setAttribute('onclick', 'goToStep2()');
+
+            backdrop.classList.add('open');
+            panel.classList.add('open');
+        }
+
+        function openEditDrawer(id, name, lastname, email, phone, phonetype, gradeId, matricula) {
+            isEditMode = true;
+            
+            document.getElementById('drawerTitle').textContent = 'Modificar Estudiante';
+            formEl.setAttribute('action', '/Students?handler=Edit');
+            
+            goToStep1();
+            
+            idInput.value = id;
+            nameInput.value = name;
+            lastnameInput.value = lastname;
+            document.getElementById('field-matricula').value = matricula;
+            document.getElementById('field-matricula').readOnly = true; 
+            gradeInput.value = gradeId;
+            
+            nameInput.setAttribute('name', 'EditingStudent.Name');
+            lastnameInput.setAttribute('name', 'EditingStudent.LastName');
+            gradeInput.setAttribute('name', 'EditingStudent.GradeId');
+
+            document.getElementById('btnNextStep').textContent = 'Guardar Cambios';
+            document.getElementById('btnNextStep').setAttribute('onclick', 'submitEditForm()');
+
+            backdrop.classList.add('open');
+            panel.classList.add('open');
+        }
+
+        function submitEditForm() {
+            if (!nameInput.value.trim() || !lastnameInput.value.trim() || !gradeInput.value) {
+                alert('Por favor, complete todos los campos requeridos del estudiante.');
+                return;
+            }
+            formEl.submit();
+        }
+
+        function goToStep1() {
+            document.getElementById('drawerTitle').textContent = isEditMode ? 'Modificar Estudiante' : 'Registrar Nuevo Estudiante';
+            document.getElementById('drawerStep1').style.display = 'flex';
+            document.getElementById('drawerStep2').style.display = 'none';
+            document.getElementById('drawerFooterStep1').style.display = 'flex';
+            document.getElementById('drawerFooterStep2').style.display = 'none';
+        }
+
+        function goToStep2() {
+            if (!nameInput.value.trim() || !lastnameInput.value.trim() || !document.getElementById('field-matricula').value.trim() || !gradeInput.value) {
+                alert('Por favor, complete todos los campos del estudiante.');
+                return;
+            }
+            
+            document.getElementById('drawerTitle').textContent = 'Agregar Acudiente';
+            document.getElementById('drawerStep1').style.display = 'none';
+            document.getElementById('drawerStep2').style.display = 'flex';
+            document.getElementById('drawerFooterStep1').style.display = 'none';
+            document.getElementById('drawerFooterStep2').style.display = 'flex';
+        }
+
+        function closeDrawer() {
+            backdrop.classList.remove('open');
+            panel.classList.remove('open');
+        }
+
+        let currentViewingStudentId = '';
+
+        function openGuardiansModalFromButton(btn) {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const lastname = btn.getAttribute('data-lastname');
+            const code = btn.getAttribute('data-code');
+            const gradeName = btn.getAttribute('data-grade');
+            const guardiansJson = btn.getAttribute('data-guardians');
+            
+            openGuardiansModal(id, name, lastname, code, gradeName, guardiansJson);
+        }
+
+        function openGuardiansModal(id, name, lastname, code, gradeName, guardiansJson) {
+            currentViewingStudentId = id;
+            const guardians = JSON.parse(guardiansJson || '[]');
+            
+            document.getElementById('modal-student-name').textContent = `${name} ${lastname}`;
+            document.getElementById('modal-student-id').textContent = `ID: ${code}`;
+            document.getElementById('modal-student-grade').textContent = gradeName;
+            
+            const initials = (name[0] || '') + (lastname[0] || '');
+            document.getElementById('modal-student-avatar').textContent = initials.toUpperCase();
+            
+            document.getElementById('btnTriggerAddGuardian').onclick = function() {
+                openGuardianDrawer(id);
+            };
+
+            const tbody = document.getElementById('guardians-table-body');
+            tbody.innerHTML = '';
+            
+            if (guardians.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--color-text-muted); padding: 30px;">No hay acudientes registrados para este estudiante.</td></tr>`;
+            } else {
+                guardians.forEach(g => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight: 600; padding: 14px 24px;">${g.name}</td>
+                            <td style="padding: 14px 24px;">${g.phone}</td>
+                            <td style="padding: 14px 24px;">${g.email}</td>
+                            <td style="padding: 14px 24px;">
+                                <div class="action-group">
+                                    <button class="btn-action-icon btn-delete" type="button" title="Eliminar Acudiente" onclick="deleteGuardian('${id}', '${g.id}')">
+                                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            document.getElementById('guardiansBackdrop').classList.add('open');
+            document.getElementById('guardiansModal').classList.add('open');
+        }
+
+        function closeGuardiansModal() {
+            document.getElementById('guardiansBackdrop').classList.remove('open');
+            document.getElementById('guardiansModal').classList.remove('open');
+        }
+
+        function openGuardianDrawer(studentId) {
+            document.getElementById('field-guardian-student-id').value = studentId;
+            
+            document.getElementById('field-selected-existing-guardian-id').value = '';
+            document.getElementById('field-guardian-name').value = '';
+            document.getElementById('field-guardian-lastname').value = '';
+            document.getElementById('field-guardian-email').value = '';
+            document.getElementById('field-guardian-phone').value = '';
+            document.getElementById('guardianSearchInput').value = '';
+            
+            document.getElementById('field-guardian-name').readOnly = false;
+            document.getElementById('field-guardian-lastname').readOnly = false;
+            document.getElementById('field-guardian-name').required = true;
+            document.getElementById('field-guardian-lastname').required = true;
+
+            document.getElementById('drawerBackdrop').classList.add('open');
+            document.getElementById('guardianDrawer').classList.add('open');
+        }
+
+        function closeGuardianDrawer() {
+            document.getElementById('guardianDrawer').classList.remove('open');
+            if (!panel.classList.contains('open') && !document.getElementById('editGuardianDrawer').classList.contains('open')) {
+                document.getElementById('drawerBackdrop').classList.remove('open');
+            }
+        }
+
+        function showGuardiansList() {
+            document.getElementById('guardiansAutocompleteList').style.display = 'block';
+        }
+
+        function filterGuardiansList() {
+            const input = document.getElementById('guardianSearchInput').value.toLowerCase();
+            const list = document.getElementById('guardiansAutocompleteList');
+            const items = list.getElementsByClassName('autocomplete-item');
+            
+            let visibleCount = 0;
+            for (let i = 0; i < items.length; i++) {
+                const text = items[i].textContent.toLowerCase();
+                if (text.includes(input)) {
+                    items[i].style.display = '';
+                    visibleCount++;
+                } else {
+                    items[i].style.display = 'none';
+                }
+            }
+            list.style.display = visibleCount > 0 ? 'block' : 'none';
+        }
+
+        function selectExistingGuardian(id, name, lastname, email, phone) {
+            document.getElementById('field-selected-existing-guardian-id').value = id;
+            document.getElementById('guardianSearchInput').value = `${name} ${lastname}`;
+            
+            document.getElementById('field-guardian-name').value = name;
+            document.getElementById('field-guardian-lastname').value = lastname;
+            document.getElementById('field-guardian-email').value = email;
+            document.getElementById('field-guardian-phone').value = phone;
+
+            document.getElementById('field-guardian-name').readOnly = true;
+            document.getElementById('field-guardian-lastname').readOnly = true;
+            document.getElementById('field-guardian-name').required = false;
+            document.getElementById('field-guardian-lastname').required = false;
+
+            document.getElementById('guardiansAutocompleteList').style.display = 'none';
+        }
+
+        function openEditGuardianDrawer(studentId, guardianId, name, lastname, email, phone) {
+            document.getElementById('field-edit-guardian-student-id').value = studentId;
+            document.getElementById('field-edit-guardian-id').value = guardianId;
+            
+            document.getElementById('field-edit-guardian-name').value = name;
+            document.getElementById('field-edit-guardian-lastname').value = lastname;
+            document.getElementById('field-edit-guardian-email').value = email;
+            document.getElementById('field-edit-guardian-phone').value = phone;
+
+            document.getElementById('drawerBackdrop').classList.add('open');
+            document.getElementById('editGuardianDrawer').classList.add('open');
+        }
+
+        function closeEditGuardianDrawer() {
+            document.getElementById('editGuardianDrawer').classList.remove('open');
+            if (!panel.classList.contains('open') && !document.getElementById('guardianDrawer').classList.contains('open')) {
+                document.getElementById('drawerBackdrop').classList.remove('open');
+            }
+        }
+
+        function deleteGuardian(studentId, guardianId) {
+            if (confirm('¿Está seguro de que desea eliminar este acudiente del estudiante?')) {
+                document.getElementById('deleteGuardianStudentId').value = studentId;
+                document.getElementById('deleteGuardianId').value = guardianId;
+                document.getElementById('deleteGuardianForm').submit();
+            }
+        }
+
+        function showDrawerGuardiansList() {
+            document.getElementById('drawerGuardiansAutocompleteList').style.display = 'block';
+        }
+
+        function filterDrawerGuardians() {
+            const input = document.getElementById('drawerGuardianSearchInput').value.toLowerCase();
+            const list = document.getElementById('drawerGuardiansAutocompleteList');
+            const items = list.getElementsByClassName('autocomplete-item-drawer');
+            
+            let visibleCount = 0;
+            for (let i = 0; i < items.length; i++) {
+                const text = items[i].textContent.toLowerCase();
+                if (text.includes(input)) {
+                    items[i].style.display = '';
+                    visibleCount++;
+                } else {
+                    items[i].style.display = 'none';
+                }
+            }
+            list.style.display = visibleCount > 0 ? 'block' : 'none';
+        }
+
+        function selectDrawerExistingGuardian(id, name, lastname, email, phone) {
+            document.getElementById('field-drawer-existing-guardian-id').value = id;
+            document.getElementById('drawerGuardianSearchInput').value = `${name} ${lastname}`;
+            
+            document.getElementById('field-drawer-guardian-name').value = name;
+            document.getElementById('field-drawer-guardian-lastname').value = lastname;
+            document.getElementById('field-drawer-guardian-email').value = email;
+            document.getElementById('field-drawer-guardian-phone').value = phone;
+
+            document.getElementById('field-drawer-guardian-name').readOnly = true;
+            document.getElementById('field-drawer-guardian-lastname').readOnly = true;
+
+            document.getElementById('drawerGuardiansAutocompleteList').style.display = 'none';
+        }
+
+        document.addEventListener('click', function(e) {
+            const container1 = document.getElementById('guardiansAutocompleteList');
+            const input1 = document.getElementById('guardianSearchInput');
+            if (container1 && e.target !== input1 && !container1.contains(e.target)) {
+                container1.style.display = 'none';
+            }
+
+            const container2 = document.getElementById('drawerGuardiansAutocompleteList');
+            const input2 = document.getElementById('drawerGuardianSearchInput');
+            if (container2 && e.target !== input2 && !container2.contains(e.target)) {
+                container2.style.display = 'none';
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const openId = '@Model.openGuardiansStudentId';
+            if (openId && openId !== '00000000-0000-0000-0000-000000000000') {
+                const btn = document.querySelector(`.btn-view-guardians[data-id="${openId}"]`);
+                if (btn) {
+                    openGuardiansModalFromButton(btn);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+*@

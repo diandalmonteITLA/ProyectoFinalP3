@@ -1,0 +1,78 @@
+﻿@model List<ShowStudentViewModel>;
+@{
+    ViewData["Title"] = "Géstion Estudiantes";
+    Layout = "_LayoutCoordinator";
+}
+
+<a asp-controller="Student" asp-action="Create"
+   class="btn-primary-custom" title="Editar">
+    + Registrar Estudiante
+</a>
+
+<section class="cards-grid">
+    @if (!Model.Any())
+    {
+        <div style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px; background: #ffffff; border-radius: 16px; border: 1px solid var(--color-border);">
+            No se encontraron estudiantes inscritos con ese criterio.
+        </div>
+    }
+    else
+    {
+        @foreach (var student in Model)
+        {
+            var initials = (student.Name.Length > 0 ? student.Name[0].ToString() : "") + (student.LastName.Length > 0 ? student.LastName[0].ToString() : "");
+
+            var guardiansData = System.Text.Json.JsonSerializer.Serialize(student.Guardians.Select(g => new
+            {
+                id = g.Id,
+                name = g.FullName,
+                firstname = g.Name,
+                lastname = g.LastName,
+                phone = g.Phone,
+                email = g.Email
+            }));
+
+            <div class="student-card">
+                <div class="student-status-dot"></div>
+
+                <div class="student-header">
+                    <div class="avatar-circle">@initials.ToUpper()</div>
+                    <div class="student-identity">
+                        <span class="student-name">@student.Name @student.LastName</span>
+                    </div>
+                </div>
+
+                <div class="card-divider"></div>
+
+                <div class="student-footer">
+                    <div class="student-grade-label">
+                        Grado Escolar: <span class="student-grade-value">@student.GradeName</span>
+                    </div>
+                    <div class="action-group">
+                        <button class="btn-action-icon btn-view-guardians" title="Ver Acudientes"
+                                data-id="@student.Id"
+                                data-name="@student.Name"
+                                data-lastname="@student.LastName"
+                                data-grade="@student.GradeName"
+                                data-guardians="@guardiansData"
+                                onclick="openGuardiansModalFromButton(this)">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </button>
+
+                        <button class="btn-action-icon" title="Editar"
+                                onclick="openEditDrawer('@student.Id', '@student.Name', '@student.LastName', '', '', '', '@student.GradeId')">
+                            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </button>
+
+                        <form method="post" asp-page-handler="Delete" style="display:inline;" onsubmit="return confirm('¿Está seguro de que desea eliminar a este estudiante?')">
+                            <input type="hidden" name="id" value="@student.Id" />
+                            <button type="submit" class="btn-action-icon btn-delete" title="Eliminar">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</section>

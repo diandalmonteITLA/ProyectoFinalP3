@@ -11,7 +11,7 @@ namespace App.Core.Domain.Entities
         public Guid Id { get; set; }
         public required string Name { get; set; }
         public required string LastName { get; set; }
-        public required bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public Guid GradeId { get; set; }
         public Grade? Grade { get; set; }
 

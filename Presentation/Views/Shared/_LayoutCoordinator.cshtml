@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Portal De Gestión</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+
+
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-emblem"></div>
+                <span class="brand-text">Instituto tal</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item active">
+                    <a href="/Teacher" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        <span>Docentes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/Students" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M22 10l10-5 10 5-10 5z"></path></svg>
+                        <span>Estudiantes</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-workspace">
+            <section class="academic-banner">
+                <div class="banner-content">
+                    <div class="banner-accent-bar"></div>
+                    <span class="banner-subtitle">• PORTAL DE GESTIÓN</span>
+                    <h1 class="banner-title">@ViewData["Title"]</h1>
+                    <p class="banner-description">Panel administrativo.</p>
+                </div>
+                <div class="user-floating-profile">
+                    <div class="profile-avatar">CB</div>
+                    <div class="profile-meta">
+                        <span class="profile-username">@User.Identity?.Name</span>
+                        <span class="profile-userrole">Coordinadora General</span>
+                    </div>
+                </div>
+            </section>
+
+            @RenderBody()
+        </main>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
