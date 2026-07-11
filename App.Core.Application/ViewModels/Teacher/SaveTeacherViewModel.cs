@@ -18,6 +18,6 @@ namespace App.Core.Application.ViewModels.Teacher
         [EmailAddress(ErrorMessage = "El correo electrónico no es válido.")]
         public string Email { get; set; } = string.Empty;
 
-        public PhoneNumberDto PhoneNumber { get; set; } = new() { Number = string.Empty };
+        public List<PhoneNumberDto> PhoneNumbers { get; set; } = new();
     }
 }

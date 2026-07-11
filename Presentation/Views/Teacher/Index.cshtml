@@ -1,4 +1,4 @@
-@model List<App.Core.Application.ViewModels.Teacher.TeacherViewModel>
+@model List<TeacherViewModel>
 @{
     ViewData["Title"] = "Nuestros Profesores";
     Layout = "_LayoutCoordinator";
@@ -63,14 +63,14 @@
                         initials = "D";
                     }
 
-                    <tr class="teacher-row" data-name="@(teacher.Name.ToLower() + " " + teacher.LastName.ToLower())" data-email="@teacher.Email.ToLower()" data-phone="@teacher.Phone">
+                    <tr class="teacher-row" data-name="@(teacher.Name.ToLower() + " " + teacher.LastName.ToLower())" data-email="@teacher.Email.ToLower()" data-phone="@teacher.PhoneNumbers">
                         <td>
                             <div class="profile-cell">
                                 <div class="avatar-mini">@initials.ToUpper()</div>
                                 <span class="teacher-fullname">@teacher.Name @teacher.LastName</span>
                             </div>
                         </td>
-                        <td>@FormatPhone(teacher.Phone)</td>
+                        <td>@FormatPhone(teacher.PhoneNumbers[0].Number)</td>
                         <td>@teacher.Email</td>
                         <td>
                             <div class="action-group">

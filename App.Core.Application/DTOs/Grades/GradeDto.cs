@@ -14,13 +14,6 @@ namespace App.Core.Application.DTOs.Grades
         public Guid TeacherId { get; set; }
         public string? TeacherName { get; set; }
 
-        public List<StudentSummaryDto>? Students { get; set; }
-    }
-
-    public class StudentSummaryDto
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
+        public int StudentCount { get; set; }
     }
 }

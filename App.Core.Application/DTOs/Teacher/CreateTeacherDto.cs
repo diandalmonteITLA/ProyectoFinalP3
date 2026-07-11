@@ -22,6 +22,6 @@ namespace App.Core.Application.DTOs.Teacher
         public required string Email { get; set; }
 
         [Required(ErrorMessage = "El número de teléfono es obligatorio.")]
-        public required PhoneNumberDto PhoneNumber { get; set; }
+        public required ICollection<PhoneNumberDto> PhoneNumbers { get; set; }
     }
 }

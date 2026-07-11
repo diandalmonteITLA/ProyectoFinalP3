@@ -16,14 +16,11 @@ namespace App.Core.Application.Mappings.EntitiesAndDtos
         {
             CreateMap<PhoneNumber, PhoneNumberDto>().ReverseMap();
 
-            // Entity -> DTO
-            CreateMap<Teacher, TeacherDto>();
+            CreateMap<Teacher, TeacherDto>().ReverseMap();
 
-            // Entity -> DTO
-            CreateMap<Teacher, UpdateTeacherDto>();
+            CreateMap<Teacher, UpdateTeacherDto>().ReverseMap();
 
-            // DTO -> Entity
-            CreateMap<TeacherDto, Teacher>();
+            CreateMap<CreateTeacherDto, Teacher>().ReverseMap();
         }
     }
 }

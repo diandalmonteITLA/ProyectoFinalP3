@@ -10,6 +10,8 @@ namespace App.Core.Application.Services
     {
         private readonly IGradeRepository _gradeRepository;
         private readonly IMapper _mapper;
+        private readonly IStudentService _studentService;
+        private readonly ITeacherService _teacherService;
 
         public GradeService(IGradeRepository gradeRepository, IMapper mapper)
         {

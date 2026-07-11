@@ -10,7 +10,7 @@ namespace App.Core.Application.ViewModels.Grade
     public class EditGradeViewModel
     {
         public required GradeViewModel Grade { get; set; }
-        public List<TeacherViewModel> ActiveTeachers { get; set; }
+        public List<TeacherViewModel> ActiveTeachers { get; set; } = new();
 
     }
 }
