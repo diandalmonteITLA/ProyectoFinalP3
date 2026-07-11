@@ -1,15 +1,25 @@
-﻿@model List<ShowStudentViewModel>;
+@model List<ShowStudentViewModel>;
 @{
-    ViewData["Title"] = "Géstion Estudiantes";
+    ViewData["Title"] = "Estudiantes Inscritos";
+    ViewData["BannerDescription"] = "Listado general de alumnos admitidos en este ciclo académico.";
     Layout = "_LayoutCoordinator";
 }
 
-<a asp-controller="Student" asp-action="Create"
-   class="btn-primary-custom" title="Editar">
-    + Registrar Estudiante
-</a>
+<section class="workspace-controls">
+    <div class="search-container">
+        <input type="text" class="table-search-input" id="searchStudentInput" placeholder="🔍  Buscar estudiante..." oninput="filterStudents()" />
+        
+        <select class="table-search-input" id="filterGradeSelect" style="width: 200px; cursor: pointer; padding: 0 12px;" onchange="filterStudents()">
+            <option value="">Todos los Grados</option>
+        </select>
+    </div>
+    
+    <a asp-controller="Student" asp-action="Create" class="btn-register-docente" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+        + Registrar Estudiante
+    </a>
+</section>
 
-<section class="cards-grid">
+<section class="cards-grid" id="studentsGrid">
     @if (!Model.Any())
     {
         <div style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px; background: #ffffff; border-radius: 16px; border: 1px solid var(--color-border);">
@@ -32,7 +42,7 @@
                 email = g.Email
             }));
 
-            <div class="student-card">
+            <div class="student-card" data-grade="@student.GradeName" data-name="@(student.Name.ToLower() + " " + student.LastName.ToLower())">
                 <div class="student-status-dot"></div>
 
                 <div class="student-header">
@@ -60,12 +70,11 @@
                         </button>
 
                         <button class="btn-action-icon" title="Editar"
-                                onclick="openEditDrawer('@student.Id', '@student.Name', '@student.LastName', '', '', '', '@student.GradeId')">
+                                onclick="location.href='/Student/Edit/@student.Id'">
                             <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                         </button>
 
-                        <form method="post" asp-page-handler="Delete" style="display:inline;" onsubmit="return confirm('¿Está seguro de que desea eliminar a este estudiante?')">
-                            <input type="hidden" name="id" value="@student.Id" />
+                        <form asp-controller="Student" asp-action="Delete" asp-route-id="@student.Id" method="post" style="display:inline;" onsubmit="return confirm('¿Está seguro de que desea eliminar a este estudiante?')">
                             <button type="submit" class="btn-action-icon btn-delete" title="Eliminar">
                                 <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                             </button>
@@ -76,3 +85,117 @@
         }
     }
 </section>
+
+<div class="drawer-backdrop" id="guardiansBackdrop" onclick="closeGuardiansModal()"></div>
+<div id="guardiansModal" class="guardians-modal-card">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+        <div class="avatar-circle" id="modal-student-avatar" style="width: 48px; height: 48px;"></div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span class="student-name" id="modal-student-name" style="font-size: 15px; font-weight: 700;"></span>
+        </div>
+    </div>
+    <div style="font-size: 13px; color: var(--color-text-muted); margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">
+        <span>Grado Escolar:</span>
+        <span style="font-weight: 700; color: var(--color-text-dark); background-color: #F1F5F9; padding: 4px 12px; border-radius: 6px;" id="modal-student-grade"></span>
+    </div>
+
+    <table class="teachers-table" style="margin-bottom: 32px; border-radius: 8px; overflow: hidden; border: 1px solid var(--color-border);">
+        <thead>
+            <tr>
+                <th>Acudiente</th>
+                <th>Número Telefónico</th>
+                <th>Correo Electrónico</th>
+            </tr>
+        </thead>
+        <tbody id="guardians-table-body">
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function filterStudents() {
+            const query = document.getElementById('searchStudentInput').value.toLowerCase().trim();
+            const grade = document.getElementById('filterGradeSelect').value;
+            const cards = document.getElementsByClassName('student-card');
+            
+            for (let card of cards) {
+                const name = card.getAttribute('data-name');
+                const cardGrade = card.getAttribute('data-grade');
+                
+                const matchesQuery = name.includes(query);
+                const matchesGrade = !grade || cardGrade === grade;
+                
+                card.style.display = (matchesQuery && matchesGrade) ? '' : 'none';
+            }
+        }
+
+        function initializeFilters() {
+            const select = document.getElementById('filterGradeSelect');
+            const cards = document.getElementsByClassName('student-card');
+            const uniqueGrades = new Set();
+            for (let card of cards) {
+                const grade = card.getAttribute('data-grade');
+                if (grade) {
+                    uniqueGrades.add(grade);
+                }
+            }
+            
+            select.innerHTML = '<option value="">Todos los Grados</option>';
+            Array.from(uniqueGrades).sort().forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                select.appendChild(opt);
+            });
+        }
+
+        function openGuardiansModalFromButton(btn) {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const lastname = btn.getAttribute('data-lastname');
+            const gradeName = btn.getAttribute('data-grade');
+            const guardiansJson = btn.getAttribute('data-guardians');
+            
+            openGuardiansModal(id, name, lastname, gradeName, guardiansJson);
+        }
+
+        function openGuardiansModal(id, name, lastname, gradeName, guardiansJson) {
+            const guardians = JSON.parse(guardiansJson || '[]');
+            
+            document.getElementById('modal-student-name').textContent = `${name} ${lastname}`;
+            document.getElementById('modal-student-grade').textContent = gradeName;
+            
+            const initials = (name[0] || '') + (lastname[0] || '');
+            document.getElementById('modal-student-avatar').textContent = initials.toUpperCase();
+
+            const tbody = document.getElementById('guardians-table-body');
+            tbody.innerHTML = '';
+            
+            if (guardians.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--color-text-muted); padding: 30px;">No hay acudientes registrados para este estudiante.</td></tr>`;
+            } else {
+                guardians.forEach(g => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="font-weight: 600; padding: 14px 24px;">${g.name}</td>
+                            <td style="padding: 14px 24px;">${g.phone}</td>
+                            <td style="padding: 14px 24px;">${g.email}</td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            document.getElementById('guardiansBackdrop').classList.add('open');
+            document.getElementById('guardiansModal').classList.add('open');
+        }
+
+        function closeGuardiansModal() {
+            document.getElementById('guardiansBackdrop').classList.remove('open');
+            document.getElementById('guardiansModal').classList.remove('open');
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeFilters);
+    </script>
+}

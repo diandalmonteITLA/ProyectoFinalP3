@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +33,9 @@ namespace App.Infrastructure.Persistence.EntityConfigurations
             builder.HasOne(s => s.Grade)
                 .WithMany(g => g.Students)
                 .HasForeignKey(s => s.GradeId);
+
+            builder.Navigation(s => s.Grade).AutoInclude();
+            builder.Navigation(s => s.Guardian).AutoInclude();
         }
     }
 }

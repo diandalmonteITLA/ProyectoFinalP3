@@ -1,29 +1,47 @@
-﻿@model List<TeacherViewModel>;
+@model List<App.Core.Application.ViewModels.Teacher.TeacherViewModel>
 @{
-    ViewData["Title"] = "Géstion Profesores";
+    ViewData["Title"] = "Nuestros Profesores";
     Layout = "_LayoutCoordinator";
 }
 
-<button class="btn-register-docente" onclick="openCreateDrawer()">
-    + Registrar Docente
-</button>
+@functions {
+    public string FormatPhone(string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone)) return string.Empty;
+        var digits = new string(phone.Where(char.IsDigit).ToArray());
+        if (digits.Length == 10)
+        {
+            return $"{digits.Substring(0, 3)}-{digits.Substring(3, 3)}-{digits.Substring(6)}";
+        }
+        return phone;
+    }
+}
 
-<section class="table-card">
+<section class="workspace-controls">
+    <div class="search-container">
+        <input type="text" class="table-search-input" id="searchTeacherInput" placeholder="🔍  Buscar docente..." oninput="filterTeachers()" />
+    </div>
+    <a asp-controller="Teacher" asp-action="Create" class="btn-register-docente btn-register-docente-link">
+        + Registrar Docente
+    </a>
+</section>
+
+<section class="table-card table-card-scrollable">
     <table class="teachers-table">
         <thead>
             <tr>
-                <th>Profesor</th>
-                <th>Correo Electrónico</th>
-                <th>Número Telefónico</th>
-                <th>Acciones</th>
+                <th class="table-header-sticky">Profesor</th>
+                <th class="table-header-sticky">Número Telefónico</th>
+                <th class="table-header-sticky">Correo Electrónico</th>
+                <th class="table-header-sticky">Acciones</th>
             </tr>
         </thead>
-        <tbody>
-            @if (!Model.Any())
+        <tbody id="teachersTableBody">
+            @if (Model == null || !Model.Any())
             {
                 <tr>
-                    <td colspan="5" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
-                        No se encontraron profesores registrados con ese criterio.
+                    <td colspan="4" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+                        No se encontraron profesores registrados.
                     </td>
                 </tr>
             }
@@ -31,31 +49,40 @@
             {
                 @foreach (var teacher in Model)
                 {
-                    var initials = (teacher.Name.Length > 0 ? teacher.Name[0].ToString() : "") + (teacher.LastName.Length > 0 ? teacher.LastName[0].ToString() : "");
-                    <tr>
+                    var initials = "";
+                    if (!string.IsNullOrWhiteSpace(teacher.Name))
+                    {
+                        initials += teacher.Name[0].ToString();
+                    }
+                    if (!string.IsNullOrWhiteSpace(teacher.LastName))
+                    {
+                        initials += teacher.LastName[0].ToString();
+                    }
+                    if (string.IsNullOrEmpty(initials))
+                    {
+                        initials = "D";
+                    }
+
+                    <tr class="teacher-row" data-name="@(teacher.Name.ToLower() + " " + teacher.LastName.ToLower())" data-email="@teacher.Email.ToLower()" data-phone="@teacher.Phone">
                         <td>
                             <div class="profile-cell">
+                                <div class="avatar-mini">@initials.ToUpper()</div>
                                 <span class="teacher-fullname">@teacher.Name @teacher.LastName</span>
                             </div>
                         </td>
+                        <td>@FormatPhone(teacher.Phone)</td>
                         <td>@teacher.Email</td>
-                        <td>@teacher.Phone</td>
                         <td>
                             <div class="action-group">
-                                <a asp-controller="Teacher" asp-action="Edit" asp-route-id="@teacher.Id"
-                                   class="btn-action-icon drawer-trigger" title="Editar">
+                                <a asp-controller="Teacher" asp-action="Edit" asp-route-id="@teacher.Id" class="btn-action-icon" title="Editar">
                                     <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                 </a>
-
-                                <a asp-controller="Teacher" asp-action="Deactivate" asp-route-id="@teacher.Id"
-                                   class="btn-action-icon btn-delete drawer-trigger" title="Desactivar">
-                                    <svg viewBox="0 0 24 24">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                </a>
+                                
+                                <form asp-controller="Teacher" asp-action="Delete" asp-route-id="@teacher.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro de que desea desactivar a este profesor?')">
+                                    <button type="submit" class="btn-action-icon btn-delete" title="Desactivar">
+                                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -64,3 +91,20 @@
         </tbody>
     </table>
 </section>
+
+@section Scripts {
+    <script>
+        function filterTeachers() {
+            const query = document.getElementById('searchTeacherInput').value.toLowerCase().trim();
+            const rows = document.getElementsByClassName('teacher-row');
+            for (let row of rows) {
+                const name = row.getAttribute('data-name') || '';
+                const email = row.getAttribute('data-email') || '';
+                const phone = row.getAttribute('data-phone') || '';
+                
+                const matches = name.includes(query) || email.includes(query) || phone.includes(query);
+                row.style.display = matches ? '' : 'none';
+            }
+        }
+    </script>
+}

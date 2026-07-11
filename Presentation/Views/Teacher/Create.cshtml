@@ -1,49 +1,96 @@
-﻿@model SaveTeacherViewModel
+@model App.Core.Application.DTOs.Teacher.CreateTeacherDto
 @{
-    bool editMode = ViewBag.editMode ?? false;
+    Layout = "_LayoutCoordinator";
+    ViewData["Title"] = "Registrar Docente";
+    ViewData["BannerDescription"] = "Portal de administración de coordinadores y registro de profesores.";
 }
 
-<div class="drawer-form-panel" id="drawerPanel">
+<div id="background-grid-container"></div>
+
+<a asp-controller="Teacher" asp-action="Index" class="drawer-backdrop" id="createBackdrop" onclick="closeCreateDrawer(event)"></a>
+
+<div class="drawer-form-panel" id="createDrawer">
     <div class="drawer-header">
-        <h2 class="drawer-title" id="drawerTitle">@(editMode ? "Editar" : "Registrar Nuevo") Docente</h2>
+        <h2 class="drawer-title" id="drawerTitle">Registrar Nuevo Docente</h2>
     </div>
 
-    <form asp-controller="Teacher" asp-action="@(editMode ? "Edit" : "Create")" method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">
-        <input type="hidden" asp-for="Id" id="field-id" />
-
+    <form asp-controller="Teacher" asp-action="Create" method="post" id="drawerForm" class="drawer-form">
         <div class="drawer-body">
-            <div class="row">
-                <div class="col drawer-field-group">
-                    <label class="drawer-label">Nombre</label>
-                    <input asp-for="Name" class="drawer-input" id="field-name" placeholder="ej. Alejandro" required />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="All" class="text-danger" style="margin-bottom: 20px; font-size: 13px; font-weight: 500;"></div>
+            }
 
-                <div class="col drawer-field-group">
-                    <label class="drawer-label">Apellido</label>
-                    <input asp-for="LastName" class="drawer-input" id="field-lastname" placeholder="ej. Ortiz" required />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
-
-                <div class="drawer-field-group">
-                    <label class="drawer-label">Correo Electrónico</label>
-                    <input asp-for="Email" class="drawer-input" id="field-email" placeholder="ej. a.ortiz@docente.edu.do" required />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-
-                <div class="row">
-                    <div class="col-8 drawer-field-group">
-                        <label class="drawer-label">Número Telefónico</label>
-                        <input asp-for="PhoneNumber" class="drawer-input" id="field-phonenumber" placeholder="ej. a.809-555-0101" required />
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                    </div>
-                </div>
+            <div class="drawer-field-group">
+                <label class="drawer-label">Nombre</label>
+                <input asp-for="Name" class="drawer-input" id="field-name" placeholder="ej. Alejandro" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="drawer-field-group">
+                <label class="drawer-label">Apellido</label>
+                <input asp-for="LastName" class="drawer-input" id="field-lastname" placeholder="ej. Ortiz" required />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="drawer-field-group">
+                <label class="drawer-label">Correo Electrónico</label>
+                <input asp-for="Email" type="email" class="drawer-input" id="field-email" placeholder="ej. a.ortiz@docente.edu.do" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="drawer-field-group">
+                <label class="drawer-label">Número Telefónico</label>
+                <input name="PhoneNumber.Number" class="drawer-input" id="field-phone" placeholder="ej. 809-555-0101" value="@(Model?.PhoneNumber?.Number)" required />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
         </div>
 
         <div class="drawer-footer">
-            <a asp-controller="Docente" asp-action="Index" class="btn-drawer-cancel" style="text-decoration: none; text-align: center;">Cancelar</a>
+            <a asp-controller="Teacher" asp-action="Index" class="btn-drawer-cancel btn-drawer-cancel-link" onclick="closeCreateDrawer(event)">Cancelar</a>
             <button type="submit" class="btn-drawer-submit" id="btnDrawerSubmit">Guardar Docente</button>
         </div>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function closeCreateDrawer(event) {
+            event.preventDefault();
+            const url = event.currentTarget.getAttribute('href') || '/Teacher';
+            document.getElementById('createBackdrop').classList.remove('open');
+            document.getElementById('createDrawer').classList.remove('open');
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/Teacher')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const grid = doc.querySelector('.table-card');
+                    const controls = doc.querySelector('.workspace-controls');
+                    const container = document.getElementById('background-grid-container');
+                    
+                    if (controls) {
+                        const controlsClone = controls.cloneNode(true);
+                        const inputs = controlsClone.querySelectorAll('input, select, button, a');
+                        inputs.forEach(i => i.setAttribute('disabled', 'disabled'));
+                        container.appendChild(controlsClone);
+                    }
+                    if (grid) {
+                        const gridClone = grid.cloneNode(true);
+                        const buttons = gridClone.querySelectorAll('button, form, a');
+                        buttons.forEach(b => b.setAttribute('disabled', 'disabled'));
+                        container.appendChild(gridClone);
+                    }
+                });
+
+            setTimeout(() => {
+                document.getElementById('createBackdrop').classList.add('open');
+                document.getElementById('createDrawer').classList.add('open');
+            }, 50);
+        });
+    </script>
+}

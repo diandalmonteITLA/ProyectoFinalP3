@@ -15,10 +15,13 @@ namespace App.Core.Application.Mappings.EntitiesAndDtos
 
             // DTO to Entity (Create)
             CreateMap<CreateStudentDto, Student>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
+                .ForMember(dest => dest.Guardian, opt => opt.Ignore());
 
             // DTO to Entity (Update)
-            CreateMap<UpdateStudentDto, Student>().ReverseMap();
+            CreateMap<UpdateStudentDto, Student>()
+                .ForMember(dest => dest.Guardian, opt => opt.Ignore());
+            CreateMap<Student, UpdateStudentDto>();
 
             // PhoneNumber mapping
             CreateMap<PhoneNumber, PhoneNumberDto>().ReverseMap();

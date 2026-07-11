@@ -23,9 +23,5 @@ namespace App.Core.Application.DTOs.Teacher
 
         [Required(ErrorMessage = "El número de teléfono es obligatorio.")]
         public required PhoneNumberDto PhoneNumber { get; set; }
-
-        [Required(ErrorMessage = "La contraseña es obligatoria.")]
-        [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
-        public required string Password { get; set; }
     }
 }
