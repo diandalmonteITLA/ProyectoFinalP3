@@ -1,8 +1,7 @@
-@model SaveStudentViewModel
+@model App.Core.Application.DTOs.Students.UpdateStudentDto
 @{
     Layout = "_LayoutCoordinator";
-    bool editMode = ViewBag.editMode ?? false;
-    ViewData["Title"] = editMode ? "Editar Estudiante" : "Registrar Estudiante";
+    ViewData["Title"] = "Editar Estudiante";
     ViewData["BannerDescription"] = "Listado general de alumnos admitidos en este ciclo académico.";
 }
 
@@ -12,38 +11,36 @@
 
 <div class="drawer-form-panel" id="createDrawer">
     <div class="drawer-header">
-        <h2 class="drawer-title" id="drawerTitle">@(editMode ? "Editar" : "Registrar Nuevo") Estudiante</h2>
+        <h2 class="drawer-title" id="drawerTitle">Editar Estudiante</h2>
     </div>
 
-    <form asp-controller="Student" asp-action="@(editMode ? "Edit" : "Create")" method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">
-        @if (editMode)
-        {
-            <input type="hidden" asp-for="studentViewModel.Id" id="field-id" />
-        }
+    <form asp-controller="Student" asp-action="Edit" method="post" id="drawerForm" style="display: flex; flex-direction: column; height: 100%;">
+        <input type="hidden" asp-for="Id" id="field-id" />
 
         <div class="drawer-body">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div asp-validation-summary="All" class="text-danger" style="margin-bottom: 20px; font-size: 13px; font-weight: 500;"></div>
+            }
+
             <div class="row" style="margin-bottom: 20px;">
                 <div class="col drawer-field-group">
                     <label class="drawer-label">Nombre</label>
-                    <input asp-for="studentViewModel.Name" class="drawer-input" id="field-name" placeholder="ej. Alejandro" required />
-                    <span asp-validation-for="studentViewModel.Name" class="text-danger"></span>
+                    <input asp-for="Name" class="drawer-input" id="field-name" placeholder="ej. Alejandro" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="col drawer-field-group">
                     <label class="drawer-label">Apellido</label>
-                    <input asp-for="studentViewModel.LastName" class="drawer-input" id="field-lastname" placeholder="ej. Ortiz" required />
-                    <span asp-validation-for="studentViewModel.LastName" class="text-danger"></span>
+                    <input asp-for="LastName" class="drawer-input" id="field-lastname" placeholder="ej. Ortiz" required />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
             </div>
             <div class="drawer-field-group" style="margin-bottom: 20px;">
                 <label class="drawer-label">Grado</label>
-                <select asp-for="studentViewModel.GradeId" class="drawer-input" id="field-grade" style="padding: 0 12px;" required>
+                <select asp-for="GradeId" class="drawer-input" id="field-grade" style="padding: 0 12px;" data-selected-value="@Model.GradeId" required>
                     <option value="">Seleccionar grado...</option>
-                    @foreach (var grade in Model.gradeViewModels)
-                    {
-                        <option value="@grade.Id">@grade.Name</option>
-                    }
                 </select>
-                <span asp-validation-for="studentViewModel.GradeId" class="text-danger"></span>
+                <span asp-validation-for="GradeId" class="text-danger"></span>
             </div>
             
             <div class="drawer-field-group" style="margin-top: 10px; position: relative;">
@@ -53,24 +50,15 @@
                     <input type="text" class="drawer-input" id="drawerGuardianSearchInput" placeholder="🔍 Buscar acudiente..." oninput="filterDrawerGuardians()" onfocus="showDrawerGuardiansList()" required />
                     
                     <div id="drawerGuardiansAutocompleteList" style="position: absolute; bottom: 100%; left: 0; width: 100%; max-height: 150px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 8px; background: #ffffff; display: none; z-index: 1080; box-shadow: 0 4px 12px rgba(15,23,42,0.15); margin-bottom: 4px;">
-                        @foreach (var g in Model.guardianViewModels)
-                        {
-                            <div class="autocomplete-item-drawer" data-id="@g.Id" data-name="@g.FullName.ToLower()" style="padding: 10px 16px; font-size: 13px; cursor: pointer; border-bottom: 1px solid var(--color-border); transition: background 0.2s;" 
-                                 onmouseover="this.style.backgroundColor='#F1F5F9'" onmouseout="this.style.backgroundColor='transparent'"
-                                 onclick="selectDrawerExistingGuardian('@g.Id', '@g.FullName')">
-                                <strong>@g.FullName</strong> <span style="font-size:11px; color: var(--color-text-muted);">(@g.Email)</span>
-                            </div>
-                        }
                     </div>
                 </div>
-                <span asp-validation-for="studentViewModel.GuardiansId" class="text-danger"></span>
+                <span asp-validation-for="GuardianIds" class="text-danger"></span>
             </div>
 
-            <select asp-for="studentViewModel.GuardiansId" id="field-guardian" style="display:none;" multiple="multiple" required>
-                @foreach (var guardian in Model.guardianViewModels)
-                {
-                    <option value="@guardian.Id">@guardian.FullName</option>
-                }
+            @{
+                var selectedIdsJson = System.Text.Json.JsonSerializer.Serialize(Model.GuardianIds);
+            }
+            <select asp-for="GuardianIds" id="field-guardian" style="display:none;" multiple="multiple" data-selected-ids="@selectedIdsJson" required>
             </select>
         </div>
 
@@ -141,13 +129,54 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            const select = document.getElementById('field-guardian');
-            for (let option of select.options) {
-                if (option.selected) {
-                    document.getElementById('drawerGuardianSearchInput').value = option.text;
-                    break;
-                }
-            }
+            fetch('/Student/Create')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    const sourceGradeSelect = doc.getElementById('field-grade');
+                    const targetGradeSelect = document.getElementById('field-grade');
+                    if (sourceGradeSelect && targetGradeSelect) {
+                        const preselectedValue = targetGradeSelect.getAttribute('data-selected-value');
+                        targetGradeSelect.innerHTML = sourceGradeSelect.innerHTML;
+                        if (preselectedValue) {
+                            targetGradeSelect.value = preselectedValue;
+                        }
+                    }
+                    
+                    const sourceGuardianSelect = doc.getElementById('field-guardian');
+                    const targetGuardianSelect = document.getElementById('field-guardian');
+                    const autocompleteList = document.getElementById('drawerGuardiansAutocompleteList');
+                    
+                    if (sourceGuardianSelect && targetGuardianSelect) {
+                        targetGuardianSelect.innerHTML = sourceGuardianSelect.innerHTML;
+                        
+                        let selectedIds = [];
+                        try {
+                            const rawIds = targetGuardianSelect.getAttribute('data-selected-ids');
+                            selectedIds = JSON.parse(rawIds || '[]');
+                        } catch (e) {
+                            selectedIds = [];
+                        }
+                        
+                        const normalizedSelectedIds = Array.isArray(selectedIds) 
+                            ? selectedIds.map(id => String(id).toLowerCase()) 
+                            : [];
+                            
+                        for (let option of targetGuardianSelect.options) {
+                            if (normalizedSelectedIds.includes(String(option.value).toLowerCase())) {
+                                option.selected = true;
+                                document.getElementById('drawerGuardianSearchInput').value = option.text;
+                            }
+                        }
+                    }
+                    
+                    const sourceAutocompleteList = doc.getElementById('drawerGuardiansAutocompleteList');
+                    if (sourceAutocompleteList && autocompleteList) {
+                        autocompleteList.innerHTML = sourceAutocompleteList.innerHTML;
+                    }
+                });
 
             fetch('/Student')
                 .then(response => response.text())

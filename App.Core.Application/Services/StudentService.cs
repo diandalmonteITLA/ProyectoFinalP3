@@ -12,12 +12,18 @@ namespace App.Core.Application.Services
     public class StudentService : IStudentService
     {
         private readonly IGenericRepository<Student> _studentRepository;
+        private readonly IGenericRepository<Guardian> _guardianRepository;
         private readonly IPhoneNumberValidator _phoneNumberValidator;
         private readonly IMapper _mapper;
 
-        public StudentService(IGenericRepository<Student> studentRepository, IPhoneNumberValidator phoneNumberValidator, IMapper mapper)
+        public StudentService(
+            IGenericRepository<Student> studentRepository,
+            IGenericRepository<Guardian> guardianRepository,
+            IPhoneNumberValidator phoneNumberValidator,
+            IMapper mapper)
         {
             _studentRepository = studentRepository ?? throw new ArgumentNullException(nameof(studentRepository));
+            _guardianRepository = guardianRepository ?? throw new ArgumentNullException(nameof(guardianRepository));
             _phoneNumberValidator = phoneNumberValidator ?? throw new ArgumentNullException(nameof(phoneNumberValidator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -42,6 +48,21 @@ namespace App.Core.Application.Services
             }
 
             var student = _mapper.Map<Student>(createStudentDto);
+
+            if (createStudentDto.GuardianIds != null && createStudentDto.GuardianIds.Any())
+            {
+                var guardiansList = new List<Guardian>();
+                foreach (var id in createStudentDto.GuardianIds)
+                {
+                    var guardian = await _guardianRepository.GetByIdAsync(id);
+                    if (guardian != null)
+                    {
+                        guardiansList.Add(guardian);
+                    }
+                }
+                student.Guardian = guardiansList;
+            }
+
             await _studentRepository.AddAsync(student);
         }
 
@@ -52,7 +73,6 @@ namespace App.Core.Application.Services
                 throw new ArgumentException("El estudiante no puede estar vacío.", nameof(updateStudentDto));
             }
 
-
             var existingStudent = await _studentRepository.GetByIdAsync(updateStudentDto.Id);
             if (existingStudent is null)
             {
@@ -60,6 +80,21 @@ namespace App.Core.Application.Services
             }
 
             _mapper.Map(updateStudentDto, existingStudent);
+
+            if (updateStudentDto.GuardianIds != null)
+            {
+                var guardiansList = new List<Guardian>();
+                foreach (var id in updateStudentDto.GuardianIds)
+                {
+                    var guardian = await _guardianRepository.GetByIdAsync(id);
+                    if (guardian != null)
+                    {
+                        guardiansList.Add(guardian);
+                    }
+                }
+                existingStudent.Guardian = guardiansList;
+            }
+
             await _studentRepository.UpdateAsync(existingStudent);
         }
 

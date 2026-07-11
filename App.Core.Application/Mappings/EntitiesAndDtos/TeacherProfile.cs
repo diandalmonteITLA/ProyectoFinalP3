@@ -19,16 +19,6 @@ namespace App.Core.Application.Mappings.EntitiesAndDtos
             // Entity -> DTO
             CreateMap<Teacher, TeacherDto>();
 
-            // DTO -> Entity
-            CreateMap<CreateTeacherDto, Teacher>()
-                .ForMember(dest => dest.HashedPassword,
-                    opt => opt.MapFrom(src => src.Password));
-
-            // DTO -> Entity
-            CreateMap<UpdateTeacherDto, Teacher>()
-           .ForMember(dest => dest.HashedPassword,
-               opt => opt.Ignore());
-
             // Entity -> DTO
             CreateMap<Teacher, UpdateTeacherDto>();
 

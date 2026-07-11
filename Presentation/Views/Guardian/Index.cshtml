@@ -1,29 +1,47 @@
-﻿@model List<GuardianViewModel>;
+@model List<App.Core.Application.ViewModels.Guardian.GuardianViewModel>
 @{
-    ViewData["Title"] = "Géstion Guardianes";
+    ViewData["Title"] = "Acudientes Registrados";
     Layout = "_LayoutCoordinator";
 }
 
-<button class="btn-register-guardian" onclick="openCreateDrawer()">
-    + Registrar Acudiente
-</button>
+@functions {
+    public string FormatPhone(string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone)) return string.Empty;
+        var digits = new string(phone.Where(char.IsDigit).ToArray());
+        if (digits.Length == 10)
+        {
+            return $"{digits.Substring(0, 3)}-{digits.Substring(3, 3)}-{digits.Substring(6)}";
+        }
+        return phone;
+    }
+}
 
-<section class="table-card">
-    <table class="guardian-table">
+<section class="workspace-controls">
+    <div class="search-container">
+        <input type="text" class="table-search-input" id="searchGuardianInput" placeholder="🔍  Buscar acudiente..." oninput="filterGuardians()" />
+    </div>
+    <a asp-controller="Guardian" asp-action="Create" class="btn-register-docente btn-register-docente-link">
+        + Registrar Acudiente
+    </a>
+</section>
+
+<section class="table-card table-card-scrollable">
+    <table class="teachers-table">
         <thead>
             <tr>
-                <th>Acudiente</th>
-                <th>Correo Electrónico</th>
-                <th>Número Telefónico</th>
-                <th>Acciones</th>
+                <th class="table-header-sticky">Acudiente</th>
+                <th class="table-header-sticky">Número Telefónico</th>
+                <th class="table-header-sticky">Correo Electrónico</th>
+                <th class="table-header-sticky">Acciones</th>
             </tr>
         </thead>
-        <tbody>
-            @if (!Model.Any())
+        <tbody id="guardiansTableBody">
+            @if (Model == null || !Model.Any())
             {
                 <tr>
-                    <td colspan="5" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
-                        No se encontraron acudientes registrados con ese criterio.
+                    <td colspan="4" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+                        No se encontraron acudientes registrados.
                     </td>
                 </tr>
             }
@@ -31,31 +49,40 @@
             {
                 @foreach (var guardian in Model)
                 {
-                    var initials = (guardian.Name.Length > 0 ? guardian.Name[0].ToString() : "") + (guardian.LastName.Length > 0 ? guardian.LastName[0].ToString() : "");
-                    <tr>
+                    var initials = "";
+                    if (!string.IsNullOrWhiteSpace(guardian.Name))
+                    {
+                        initials += guardian.Name[0].ToString();
+                    }
+                    if (!string.IsNullOrWhiteSpace(guardian.LastName))
+                    {
+                        initials += guardian.LastName[0].ToString();
+                    }
+                    if (string.IsNullOrEmpty(initials))
+                    {
+                        initials = "G";
+                    }
+
+                    <tr class="guardian-row" data-name="@(guardian.Name.ToLower() + " " + guardian.LastName.ToLower())" data-email="@guardian.Email.ToLower()" data-phone="@guardian.Phone">
                         <td>
                             <div class="profile-cell">
-                                <span class="guardian-fullname">@guardian.Name @guardian.LastName</span>
+                                <div class="avatar-mini">@initials.ToUpper()</div>
+                                <span class="teacher-fullname">@guardian.Name @guardian.LastName</span>
                             </div>
                         </td>
+                        <td>@FormatPhone(guardian.Phone)</td>
                         <td>@guardian.Email</td>
-                        <td>@guardian.Phone</td>
                         <td>
                             <div class="action-group">
-                                <a asp-controller="Teacher" asp-action="Edit" asp-route-id="@guardian.Id"
-                                   class="btn-action-icon drawer-trigger" title="Editar">
+                                <a asp-controller="Guardian" asp-action="Edit" asp-route-id="@guardian.Id" class="btn-action-icon" title="Editar">
                                     <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                 </a>
-
-                                <a asp-controller="Teacher" asp-action="Deactivate" asp-route-id="@guardian.Id"
-                                   class="btn-action-icon btn-delete drawer-trigger" title="Desactivar">
-                                    <svg viewBox="0 0 24 24">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                </a>
+                                
+                                <form asp-controller="Guardian" asp-action="Delete" asp-route-id="@guardian.Id" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro de que desea desactivar a este acudiente?')">
+                                    <button type="submit" class="btn-action-icon btn-delete" title="Desactivar">
+                                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -64,3 +91,20 @@
         </tbody>
     </table>
 </section>
+
+@section Scripts {
+    <script>
+        function filterGuardians() {
+            const query = document.getElementById('searchGuardianInput').value.toLowerCase().trim();
+            const rows = document.getElementsByClassName('guardian-row');
+            for (let row of rows) {
+                const name = row.getAttribute('data-name') || '';
+                const email = row.getAttribute('data-email') || '';
+                const phone = row.getAttribute('data-phone') || '';
+                
+                const matches = name.includes(query) || email.includes(query) || phone.includes(query);
+                row.style.display = matches ? '' : 'none';
+            }
+        }
+    </script>
+}

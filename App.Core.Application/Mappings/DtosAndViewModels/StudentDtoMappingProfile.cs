@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +16,20 @@ namespace App.Core.Application.Mappings.DtosAndViewModels
         {
             CreateMap<StudentDto, ShowStudentViewModel>().ReverseMap();
             CreateMap<StudentDto, StudentViewModel>().ReverseMap();
-            CreateMap<CreateStudentDto, SaveStudentViewModel>().ReverseMap();
+            CreateMap<SaveStudentViewModel, CreateStudentDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.studentViewModel.Name))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.studentViewModel.LastName))
+                .ForMember(dest => dest.GradeId, opt => opt.MapFrom(src => src.studentViewModel.GradeId))
+                .ForMember(dest => dest.GuardianIds, opt => opt.MapFrom(src => src.studentViewModel.GuardiansId));
+
+            CreateMap<CreateStudentDto, SaveStudentViewModel>()
+                .ForMember(dest => dest.studentViewModel, opt => opt.MapFrom(src => new StudentViewModel
+                {
+                    Name = src.Name,
+                    LastName = src.LastName,
+                    GradeId = src.GradeId,
+                    GuardiansId = src.GuardianIds ?? new List<Guid>()
+                }));
         }
     }
 }

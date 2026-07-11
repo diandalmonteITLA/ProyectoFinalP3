@@ -1,20 +1,22 @@
-@model App.Core.Application.DTOs.Guardians.CreateGuardianDto
+@model App.Core.Application.DTOs.Teacher.UpdateTeacherDto
 @{
     Layout = "_LayoutCoordinator";
-    ViewData["Title"] = "Registrar Acudiente";
-    ViewData["BannerDescription"] = "Administración y control de los tutores y acudientes autorizados.";
+    ViewData["Title"] = "Editar Docente";
+    ViewData["BannerDescription"] = "Portal de administración de coordinadores y registro de profesores.";
 }
 
 <div id="background-grid-container"></div>
 
-<a asp-controller="Guardian" asp-action="Index" class="drawer-backdrop" id="createBackdrop" onclick="closeCreateDrawer(event)"></a>
+<a asp-controller="Teacher" asp-action="Index" class="drawer-backdrop" id="createBackdrop" onclick="closeCreateDrawer(event)"></a>
 
 <div class="drawer-form-panel" id="createDrawer">
     <div class="drawer-header">
-        <h2 class="drawer-title" id="drawerTitle">Registrar Nuevo Acudiente</h2>
+        <h2 class="drawer-title" id="drawerTitle">Modificar Docente</h2>
     </div>
 
-    <form asp-controller="Guardian" asp-action="Create" method="post" id="drawerForm" class="drawer-form">
+    <form asp-controller="Teacher" asp-action="Edit" method="post" id="drawerForm" class="drawer-form">
+        <input type="hidden" asp-for="Id" id="field-id" />
+
         <div class="drawer-body">
             @if (!ViewData.ModelState.IsValid)
             {
@@ -23,29 +25,29 @@
 
             <div class="drawer-field-group">
                 <label class="drawer-label">Nombre</label>
-                <input asp-for="Name" class="drawer-input" id="field-name" placeholder="ej. Luis" required />
+                <input asp-for="Name" class="drawer-input" id="field-name" placeholder="ej. Alejandro" required />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="drawer-field-group">
                 <label class="drawer-label">Apellido</label>
-                <input asp-for="LastName" class="drawer-input" id="field-lastname" placeholder="ej. Beltrán" required />
+                <input asp-for="LastName" class="drawer-input" id="field-lastname" placeholder="ej. Ortiz" required />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="drawer-field-group">
                 <label class="drawer-label">Correo Electrónico</label>
-                <input asp-for="Email" type="email" class="drawer-input" id="field-email" placeholder="ej. l.beltran@correo.com" required />
+                <input asp-for="Email" type="email" class="drawer-input" id="field-email" placeholder="ej. a.ortiz@docente.edu.do" required />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="drawer-field-group">
                 <label class="drawer-label">Número Telefónico</label>
-                <input name="PhoneNumbers[0].Number" class="drawer-input" id="field-phone" placeholder="ej. 809-909-1023" value="@(Model?.PhoneNumbers?.FirstOrDefault()?.Number)" required />
+                <input name="PhoneNumbers[0].Number" class="drawer-input" id="field-phone" placeholder="ej. 809-555-0101" value="@(Model?.PhoneNumbers?.FirstOrDefault()?.Number)" required />
                 <span asp-validation-for="PhoneNumbers" class="text-danger"></span>
             </div>
         </div>
 
         <div class="drawer-footer">
-            <a asp-controller="Guardian" asp-action="Index" class="btn-drawer-cancel btn-drawer-cancel-link" onclick="closeCreateDrawer(event)">Cancelar</a>
-            <button type="submit" class="btn-drawer-submit" id="btnDrawerSubmit">Guardar Acudiente</button>
+            <a asp-controller="Teacher" asp-action="Index" class="btn-drawer-cancel btn-drawer-cancel-link" onclick="closeCreateDrawer(event)">Cancelar</a>
+            <button type="submit" class="btn-drawer-submit" id="btnDrawerSubmit">Guardar Cambios</button>
         </div>
     </form>
 </div>
@@ -55,7 +57,7 @@
     <script>
         function closeCreateDrawer(event) {
             event.preventDefault();
-            const url = event.currentTarget.getAttribute('href') || '/Guardian';
+            const url = event.currentTarget.getAttribute('href') || '/Teacher';
             document.getElementById('createBackdrop').classList.remove('open');
             document.getElementById('createDrawer').classList.remove('open');
             setTimeout(() => {
@@ -64,7 +66,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('/Guardian')
+            fetch('/Teacher')
                 .then(response => response.text())
                 .then(html => {
                     const parser = new DOMParser();

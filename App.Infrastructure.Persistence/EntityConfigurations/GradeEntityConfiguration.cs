@@ -1,4 +1,4 @@
-﻿using App.Core.Domain.Entities;
+using App.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,6 +14,8 @@ namespace App.Infrastructure.Persistence.EntityConfigurations
                 .WithMany(t => t.ManagedGrades)
                 .HasForeignKey(g => g.TeacherId);
 
+            builder.Navigation(g => g.TeacherInCharge).AutoInclude();
+            builder.Navigation(g => g.Students).AutoInclude();
         }
     }
 }

@@ -97,7 +97,7 @@ namespace App.Presentation.Web.Controllers
                     }
                     if (user.Role == Roles.Coordinator.ToString())
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Student");
                     }
                 }
 
