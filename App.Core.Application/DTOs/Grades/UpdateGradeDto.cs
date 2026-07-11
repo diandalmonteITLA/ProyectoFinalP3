@@ -4,6 +4,7 @@ namespace App.Core.Application.DTOs.Grades
 {
     public class UpdateGradeDto
     {
+        public Guid Id { get; set; }
         [Required(ErrorMessage = "El nombre del curso es obligatorio.")]
         [StringLength(100, ErrorMessage = "El nombre no puede superar los 100 caracteres.")]
         public string Name { get; set; } = string.Empty;

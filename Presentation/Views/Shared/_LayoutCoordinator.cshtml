@@ -24,7 +24,7 @@
             <ul class="sidebar-menu">
                 <li class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Teacher" ? "active" : "")">
                     <a href="/Teacher" class="menu-link">
-                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        <svg viewBox="0 0 24 24"><path d="M22 10l10-5 10 5-10 5z"></path></svg>
                         <span>Docentes</span>
                     </a>
                 </li>
@@ -38,6 +38,12 @@
                     <a href="/Guardian" class="menu-link">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                         <span>Acudientes</span>
+                    </a>
+                </li>
+                <li class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Grade" ? "active" : "")">
+                    <a href="/Grade" class="menu-link">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        <span>Cursos</span>
                     </a>
                 </li>
             </ul>

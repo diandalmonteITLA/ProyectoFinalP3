@@ -1,4 +1,4 @@
-@model App.Core.Application.DTOs.Teacher.CreateTeacherDto
+@model SaveTeacherViewModel
 @{
     Layout = "_LayoutCoordinator";
     ViewData["Title"] = "Registrar Docente";
@@ -38,8 +38,8 @@
             </div>
             <div class="drawer-field-group">
                 <label class="drawer-label">Número Telefónico</label>
-                <input name="PhoneNumber.Number" class="drawer-input" id="field-phone" placeholder="ej. 809-555-0101" value="@(Model?.PhoneNumber?.Number)" required />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                <input name="PhoneNumbers[0].Number" class="drawer-input" id="field-phone" placeholder="ej. 809-909-1023" value="@(Model?.PhoneNumbers?.FirstOrDefault()?.Number)" required />
+                <span asp-validation-for="PhoneNumbers" class="text-danger"></span>
             </div>
         </div>
 

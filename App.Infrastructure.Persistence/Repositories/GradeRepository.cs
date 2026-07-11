@@ -20,14 +20,18 @@ namespace App.Infrastructure.Persistence.Repositories
         }
         public async Task<Grade?> GetByIdAsync(Guid id)
         {
-            return await _context.Set<Grade>().FindAsync(id);
+            return await _context.Set<Grade>()
+                .Include(g => g.Students)
+                .Include(g => g.TeacherInCharge)
+                .FirstOrDefaultAsync(g => g.Id == id);
         }
 
         public async Task<IReadOnlyCollection<Grade>> GetAllAsync()
         {
-            var query = _context.Set<Grade>().AsQueryable();
-
-            return await query.ToListAsync();
+            return await _context.Set<Grade>()
+                .Include(g => g.Students)
+                .Include(g => g.TeacherInCharge)
+                .ToListAsync();
         }
         public async Task UpdateAsync(Grade grade)
         {

@@ -9,6 +9,7 @@ namespace App.Core.Domain.Entities
 {
     public class PhoneNumber
     {
+        public Guid Id { get; set; }
         public required string Number { get; set; }
         public NumberType Type { get; set; }
     }

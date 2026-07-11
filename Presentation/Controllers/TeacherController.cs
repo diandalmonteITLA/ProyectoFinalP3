@@ -47,22 +47,23 @@ namespace App.Presentation.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateTeacherDto createTeacherDto)
+        public async Task<IActionResult> Create(SaveTeacherViewModel saveTeacher)
         {
             if (!ModelState.IsValid)
             {
-                return View(createTeacherDto);
+                return View(saveTeacher);
             }
 
             try
             {
-                await _teacherService.AddAsync(createTeacherDto);
+                var dto = _mapper.Map<CreateTeacherDto>(saveTeacher);
+                await _teacherService.AddAsync(dto);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return View(createTeacherDto);
+                return View(saveTeacher);
             }
         }
 

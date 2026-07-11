@@ -15,12 +15,12 @@
         <div class="drawer-body">
             <div class="row">
                 <div class="drawer-field-group">
-                    <label class="drawer-label">Docente</label>
-                    <select asp-for="Grade.TeacherId" class="drawer-input" id="field-grade" style="padding: 0 12px;" required>
+                    <label class="drawer-label">Docente Encargado</label>
+                    <select asp-for="Grade.TeacherId" class="drawer-input" id="field-teacher" style="padding: 0 12px;" required>
                         <option value="">Seleccionar docente...</option>
                         @foreach (var teacher in Model.ActiveTeachers)
                         {
-                            <option value="@teacher.Name">@teacher.LastName</option>
+                            <option value="@teacher.Id">@teacher.FullName</option>
                         }
                     </select>
                 </div>
@@ -29,8 +29,8 @@
         </div>
 
         <div class="drawer-footer">
-            <a asp-controller="Docente" asp-action="Index" class="btn-drawer-cancel" style="text-decoration: none; text-align: center;">Cancelar</a>
-            <button type="submit" class="btn-drawer-submit" id="btnDrawerSubmit">Guardar Docente</button>
+            <a asp-controller="Grade" asp-action="Index" class="btn-drawer-cancel" style="text-decoration: none; text-align: center;">Cancelar</a>
+            <button type="submit" class="btn-drawer-submit" id="btnDrawerSubmit">Guardar</button>
         </div>
     </form>
 </div>

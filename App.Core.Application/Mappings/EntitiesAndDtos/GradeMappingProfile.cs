@@ -9,15 +9,14 @@ namespace App.Core.Application.Mappings.EntitiesAndDtos
         public GradeMappingProfile()
         {
             CreateMap<Grade, GradeDto>()
-                .ForMember(dest => dest.TeacherName, opt => opt.MapFrom(src =>
-                    src.TeacherInCharge != null
-                        ? $"{src.TeacherInCharge.Name} {src.TeacherInCharge.LastName}"
-                        : null))
-                .ForMember(dest => dest.Students, opt => opt.MapFrom(src => src.Students));
+        .ForMember(dest => dest.StudentCount,
+                   opt => opt.MapFrom(src => src.Students != null ? src.Students.Count : 0))
 
-            CreateMap<Student, StudentSummaryDto>();
+        .ForMember(dest => dest.TeacherName,
+                   opt => opt.MapFrom(src => src.TeacherInCharge != null
+                       ? $"{src.TeacherInCharge.Name} {src.TeacherInCharge.LastName}"
+                       : "No Teacher Assigned"));
 
-            
             CreateMap<UpdateGradeDto, Grade>();
         }
     }
