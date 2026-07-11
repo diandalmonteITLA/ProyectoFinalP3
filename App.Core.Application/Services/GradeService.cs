@@ -1,4 +1,4 @@
-﻿using App.Core.Application.DTOs.Grades;
+using App.Core.Application.DTOs.Grades;
 using App.Core.Application.Interfaces;
 using App.Core.Domain.Entities;
 using App.Core.Domain.Interfaces;
@@ -42,7 +42,7 @@ namespace App.Core.Application.Services
             if (grade == null)
                 throw new KeyNotFoundException($"No se encontró el curso con Id {id}.");
 
-            _mapper.Map(dto, grade);
+            grade.TeacherId = dto.TeacherId;
 
             await _gradeRepository.UpdateAsync(grade);
         }

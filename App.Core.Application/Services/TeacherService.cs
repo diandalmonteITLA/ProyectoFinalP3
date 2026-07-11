@@ -48,9 +48,19 @@ namespace App.Core.Application.Services
 
         public async Task UpdateAsync(UpdateTeacherDto dto)
         {
-            var teacher = _mapper.Map<Teacher>(dto);
+            if (dto is null)
+            {
+                throw new ArgumentException("El docente no puede estar vacío.", nameof(dto));
+            }
 
-            await _teacherRepository.UpdateAsync(teacher);
+            var existingTeacher = await _teacherRepository.GetByIdAsync(dto.Id);
+            if (existingTeacher is null)
+            {
+                throw new KeyNotFoundException("No se encontró el docente que se desea actualizar.");
+            }
+
+            _mapper.Map(dto, existingTeacher);
+            await _teacherRepository.UpdateAsync(existingTeacher);
         }
 
         public async Task DeactivateAsync(Guid id)
