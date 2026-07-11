@@ -1,4 +1,4 @@
-﻿using App.Core.Application.DTOs.Grades;
+using App.Core.Application.DTOs.Grades;
 using App.Core.Application.Interfaces;
 using App.Core.Application.ViewModels.Grade;
 using App.Core.Application.ViewModels.Teacher;
@@ -62,10 +62,17 @@ namespace App.Presentation.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Guid id, GradeViewModel gradeViewModel)
+        public async Task<IActionResult> Edit(Guid id, [Bind(Prefix = "Grade")] GradeViewModel gradeViewModel)
         {
+            ModelState.Remove("Grade.Name");
+            ModelState.Remove("Name");
             if (!ModelState.IsValid)
-                return View(gradeViewModel); 
+            {
+                EditGradeViewModel editGradeVm = new EditGradeViewModel() { Grade = gradeViewModel };
+                var teacherList = await _teacherService.GetAllAsync();
+                editGradeVm.ActiveTeachers = _mapper.Map<List<TeacherViewModel>>(teacherList);
+                return View(editGradeVm);
+            }
 
             try
             {
@@ -73,10 +80,13 @@ namespace App.Presentation.Web.Controllers
                 await _gradeService.UpdateAsync(id, gradeDto);
                 return RedirectToAction(nameof(Index));
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return View(gradeViewModel);
+                EditGradeViewModel editGradeVm = new EditGradeViewModel() { Grade = gradeViewModel };
+                var teacherList = await _teacherService.GetAllAsync();
+                editGradeVm.ActiveTeachers = _mapper.Map<List<TeacherViewModel>>(teacherList);
+                return View(editGradeVm);
             }
         }
     }

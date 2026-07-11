@@ -19,18 +19,18 @@
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-emblem"></div>
-                <span class="brand-text">Instituto tal</span>
+                <span class="brand-text">Portal De Gestión</span>
             </div>
             <ul class="sidebar-menu">
                 <li class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Teacher" ? "active" : "")">
                     <a href="/Teacher" class="menu-link">
-                        <svg viewBox="0 0 24 24"><path d="M22 10l10-5 10 5-10 5z"></path></svg>
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                         <span>Docentes</span>
                     </a>
                 </li>
                 <li class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Student" ? "active" : "")">
                     <a href="/Student" class="menu-link">
-                        <svg viewBox="0 0 24 24"><path d="M22 10l10-5 10 5-10 5z"></path></svg>
+                        <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
                         <span>Estudiantes</span>
                     </a>
                 </li>
@@ -42,8 +42,8 @@
                 </li>
                 <li class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Grade" ? "active" : "")">
                     <a href="/Grade" class="menu-link">
-                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
-                        <span>Cursos</span>
+                        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Grados</span>
                     </a>
                 </li>
             </ul>

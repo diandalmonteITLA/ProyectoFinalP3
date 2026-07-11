@@ -725,3 +725,68 @@ body {
     justify-content: center;
 }
 
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.grade-card {
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.grade-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.grade-status-dot {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+}
+
+.grade-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-dark);
+}
+
+.grade-teacher {
+    font-size: 13px;
+    color: var(--color-text-label);
+    font-weight: 500;
+}
+
+.grade-divider {
+    height: 1px;
+    background-color: var(--color-border);
+    width: 100%;
+    margin: 6px 0;
+}
+
+.student-count-pill {
+    background-color: #F1F5F9;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+
